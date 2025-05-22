@@ -1,3 +1,6 @@
+
+functions/lib
+
 # Dependencies
 node_modules/
 functions/node_modules/
