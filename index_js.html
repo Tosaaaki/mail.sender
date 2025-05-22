@@ -1,0 +1,13 @@
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const app = document.getElementById('app');
+  const button = document.createElement('button');
+  button.textContent = 'Send Emails';
+  button.addEventListener('click', function() {
+    google.script.run.withSuccessHandler(function(msg) {
+      alert(msg);
+    }).sendBulkEmailsUI();
+  });
+  app.appendChild(button);
+});
+</script>
