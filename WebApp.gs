@@ -3,11 +3,25 @@ function doGet(e) {
 }
 
 function doPost(e) {
-  var token = e.parameter.token;
-  if (!verifyLogin(token)) {
-    return ContentService.createTextOutput('Unauthorized').setMimeType(ContentService.MimeType.TEXT);
+  var data = {};
+  if (e.postData && e.postData.contents) {
+    try {
+      data = JSON.parse(e.postData.contents);
+    } catch (err) {
+      return ContentService.createTextOutput('Invalid JSON').setMimeType(ContentService.MimeType.TEXT);
+    }
   }
-  var user = getUserFromToken(token);
+
+  if (data.action === 'login') {
+    var token = verifyLogin(data.id, data.password);
+    if (!token) {
+      return ContentService.createTextOutput('Unauthorized').setMimeType(ContentService.MimeType.TEXT);
+    }
+    return ContentService.createTextOutput(JSON.stringify({ token: token }))
+      .setMimeType(ContentService.MimeType.JSON);
+  }
+
+  var user = getUserFromToken(data.token);
   if (!user) {
     return ContentService.createTextOutput('Unauthorized').setMimeType(ContentService.MimeType.TEXT);
   }
