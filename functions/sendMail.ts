@@ -1,9 +1,9 @@
-import { Request, Response } from 'express';
+import * as functions from 'firebase-functions';
 import { OAuth2Client } from 'google-auth-library';
 
 const client = new OAuth2Client();
 
-async function verifyTaskRequest(req: Request) {
+async function verifyTaskRequest(req: functions.https.Request) {
   const authHeader = req.get('Authorization') || '';
   const match = authHeader.match(/^Bearer (.*)$/);
   if (!match) throw new Error('Missing bearer token');
@@ -17,7 +17,7 @@ async function verifyTaskRequest(req: Request) {
   }
 }
 
-export const sendMail = async (req: Request, res: Response) => {
+export const sendMail = functions.https.onRequest(async (req, res) => {
   try {
     await verifyTaskRequest(req);
   } catch (err) {
@@ -27,4 +27,4 @@ export const sendMail = async (req: Request, res: Response) => {
 
   // 本来はここでメール送信処理を行う
   res.json({ sent: true });
-};
+});
