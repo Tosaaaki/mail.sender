@@ -4,7 +4,7 @@ import { sendMail } from './functions/dist/sendMail.js';
 import * as admin from 'firebase-admin';
 
 // Test getCount
-admin.__setData({ emails: [1, 2, 3] });
+admin.__setData({ 'counters/default': { count: 3 } });
 const res1 = {
   statusCode: 200,
   body: null,
@@ -28,6 +28,12 @@ const res2 = {
 await sendMail(req2, res2);
 assert.deepStrictEqual(res2.body, { sent: true });
 assert.strictEqual(res2.statusCode, 200);
+
+// Verify counter incremented
+const resCount = { statusCode: 200, body: null, json(d){this.body=d;}, status(c){this.statusCode=c;return this;} };
+await getCount({}, resCount);
+assert.deepStrictEqual(resCount.body, { count: 4 });
+assert.strictEqual(resCount.statusCode, 200);
 
 // Test sendMail unauthorized
 const req3 = { get: () => 'Bearer invalid' };

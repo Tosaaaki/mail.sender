@@ -1,5 +1,8 @@
 import * as functions from 'firebase-functions';
 import { OAuth2Client } from 'google-auth-library';
+import * as admin from 'firebase-admin';
+
+admin.initializeApp();
 
 const client = new OAuth2Client();
 
@@ -25,6 +28,15 @@ export const sendMail = functions.https.onRequest(async (req, res) => {
     return;
   }
 
+  const senderId = req.body?.senderId || 'default';
+
   // 本来はここでメール送信処理を行う
+  try {
+    const ref = admin.firestore().doc(`counters/${senderId}`);
+    await ref.set({ count: admin.firestore.FieldValue.increment(1) }, { merge: true });
+  } catch (err) {
+    console.error(err);
+  }
+
   res.json({ sent: true });
 });
