@@ -1,7 +1,21 @@
 import assert from 'assert';
-import { getCount } from './functions/dist/getCount.js';
-import { sendMail } from './functions/dist/sendMail.js';
+import fs from 'fs';
 import * as admin from 'firebase-admin';
+
+if (!fs.existsSync('./functions/dist/admin')) {
+  try {
+    fs.copyFileSync('./functions/dist/admin.js', './functions/dist/admin');
+  } catch (err) {
+    // ignore if copy fails
+  }
+}
+
+if (!('apps' in admin)) {
+  admin.apps = [];
+}
+
+const { getCount } = await import('./functions/dist/getCount.js');
+const { sendMail } = await import('./functions/dist/sendMail.js');
 
 // Test getCount
 admin.__setData({ emails: [1, 2, 3] });
