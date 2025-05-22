@@ -4,9 +4,10 @@ document.addEventListener('DOMContentLoaded', function() {
   const button = document.createElement('button');
   button.textContent = 'Send Emails';
   button.addEventListener('click', function() {
+    const token = 'valid-token'; // TODO: 実際のトークン取得処理に置き換える
     google.script.run.withSuccessHandler(function(msg) {
       alert(msg);
-    }).sendBulkEmailsUI();
+    }).sendBulkEmailsUI(token);
   });
   app.appendChild(button);
 });
