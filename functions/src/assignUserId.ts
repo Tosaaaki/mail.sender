@@ -1,7 +1,5 @@
-import * as admin from 'firebase-admin';
+import admin from './admin';
 import * as functions from 'firebase-functions';
-
-admin.initializeApp();
 
 export const assignUserId = functions.auth.user().onCreate(async (user) => {
   const db = admin.firestore();

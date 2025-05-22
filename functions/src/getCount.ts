@@ -1,7 +1,5 @@
 import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
-
-admin.initializeApp();
+import admin from './admin';
 
 export const getCount = functions.https.onRequest(async (_req, res) => {
   const senderId = 'default';
