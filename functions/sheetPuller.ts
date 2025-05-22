@@ -1,9 +1,9 @@
+import * as functions from 'firebase-functions';
 import { CloudTasksClient } from '@google-cloud/tasks';
-import { Request, Response } from 'express';
 
 const client = new CloudTasksClient();
 
-export const sheetPuller = async (req: Request, res: Response) => {
+export const sheetPuller = functions.https.onRequest(async (req, res) => {
   const queue = process.env.QUEUE_NAME;
   const region = process.env.TASKS_REGION;
   const project = process.env.GCP_PROJECT || process.env.PROJECT_ID;
@@ -26,4 +26,4 @@ export const sheetPuller = async (req: Request, res: Response) => {
 
   await client.createTask({ parent, task });
   res.json({ scheduled: true });
-};
+});
