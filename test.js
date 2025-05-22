@@ -10,9 +10,6 @@ if (!fs.existsSync('./functions/dist/admin')) {
   }
 }
 
-if (!('apps' in admin)) {
-  admin.apps = [];
-}
 
 const { getCount } = await import('./functions/dist/getCount.js');
 const { sendMail } = await import('./functions/dist/sendMail.js');
