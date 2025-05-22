@@ -1,0 +1,18 @@
+{
+  "name": "functions",
+  "version": "1.0.0",
+  "description": "Cloud Functions for mail sender",
+  "main": "index.js",
+  "scripts": {
+    "build": "tsc",
+    "deploy": "npm run build"
+  },
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "firebase-admin": "^11.10.1",
+    "firebase-functions": "^4.4.1",
+    "nodemailer": "^6.9.11",
+    "googleapis": "^130.0.0"
+  }
+}
