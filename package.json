@@ -4,6 +4,7 @@
   "description": "Simple mail sender GAS project",
   "scripts": {
     "test": "npx tsc -p functions --outDir functions/dist || true && node --no-warnings test.js"
+
   },
   "dependencies": {
     "@google-cloud/tasks": "^4.0.0",
