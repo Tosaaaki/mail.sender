@@ -1,53 +1,55 @@
 # mail.sender
 
-Google Apps Script を用いたシンプルなメール送信ツールです。テスト用の Node.js 環境も用意しています。
+Cloud Functions と Firestore を用いたシンプルなメール送信ツールです。テスト用の Node.js 環境も用意しています。
 
-## 現行実装と仕様書の差異
+## システム構成
 
-このリポジトリはバックエンド処理をすべて Google Apps Script (GAS) で実装しており、データ保存には `PropertiesService` を利用しています。
-仕様書では GCP のサーバレス構成、具体的には Cloud Functions と Firestore を用いたシステムを想定しています。そのため、現在の実装は次の点で仕様と異なります。
+本ツールでは GCP 上の Cloud Functions を利用して API を提供し、データ永続化に Firestore を使用します。認証は Firebase Authentication により行われます。
 
-- API は GAS の `doGet`/`doPost` で提供している
-- 認証トークンや送信件数を Firestore ではなく `PropertiesService` に保存している
-- Cloud Functions での認証やデプロイ設定が存在しない
+- **login**: Firebase Authentication でサインインし ID トークンを返します。
+- **sheetPuller**: Google スプレッドシートからデータを取得し Firestore に保存します。
+- **sendMail**: Firestore のデータを参照してメールを送信し、送信件数を記録します。
+- **getCount**: Firestore に保存された送信済み件数を返します。
 
 ## 利用手順
 1. このリポジトリをクローンします。
 2. 必要に応じて `npm install` を実行します（現状依存パッケージはありません）。
 3. `npm test` を実行しテストが成功することを確認します。
-4. Google Apps Script 側の設定後、Web アプリにアクセスしボタンを押すとサンプルメールが送信されます。
+
+### ワークフロー
+1. `sheetPuller` 関数でスプレッドシートの内容を Firestore に取り込みます。
+2. `sendMail` 関数を呼び出してメールを送信します。処理後は送信件数が Firestore に記録されます。
+3. 送信状況は `getCount` 関数で取得できます。
 
 ## フロントエンドでのログインとトークン保存
-Web アプリを開くとログイン画面が表示されます。既定のユーザー名は `user`、パスワードは `pass` です。ログインに成功すると `login` API から発行されたトークンがブラウザの `localStorage` に保存され、メール送信やカウント取得の操作が可能になります。
+Web アプリを開くと Firebase Authentication を用いたログイン画面が表示されます。ログイン成功時に取得した ID トークンはブラウザの `localStorage` に保存され、以降の API 呼び出し時に `Authorization` ヘッダーとして付与されます。
 
 ## API の利用方法
-すべての API は Web アプリの URL へ `POST` し、`action` パラメータで呼び出します。
+各 API は HTTPS の Cloud Functions エンドポイントとして公開されています。`POST` メソッドで次の URL を呼び出します。
 
-### login
-- `action=login`
-- パラメータ: `username`, `password`
-- レスポンス: `{ "token": "<uuid>" }`
+### /login
+- ボディ: `{ "username": "...", "password": "..." }`
+- レスポンス: `{ "token": "<Firebase ID token>" }`
 
-### sendEmails
-- `action=sendEmails`
-- パラメータ: `token`
+### /sheetPuller
+- ヘッダー: `Authorization: Bearer <token>`
+- レスポンス: `{ "pulled": <件数> }`
+
+### /sendMail
+- ヘッダー: `Authorization: Bearer <token>`
 - レスポンス: `{ "sent": <送信件数> }`
 
-### getCount
-- `action=getCount`
-- パラメータ: `token`
+### /getCount
+- ヘッダー: `Authorization: Bearer <token>`
 - レスポンス: `{ "count": <送信済み件数> }`
 
 ## デプロイ手順
-1. Google Apps Script プロジェクトを作成し、このリポジトリの `*.gs` と `*.html` ファイルをすべてアップロードします。
-2. スクリプトエディタで **公開** → **ウェブアプリケーションとして導入** を選択します。
-3. 新しいバージョンを作成し、実行権限を **自分** に、アクセス権を **全員（匿名ユーザーを含む）** に設定してデプロイします。
-4. 発行された URL を開き、上記の手順でログイン後に表示される画面からメール送信を行います。トークンはブラウザに自動保存されるため、次回からはログインなしで利用可能です。
-5. 認証情報や送信先メールアドレスを変更したい場合は `Auth.gs` や `MailSender.gs` を編集してから再デプロイしてください。
-
-## TODO: GCP サーバレス移行に向けた実装方針
-
-- Firestore を用いてトークンや送信件数を永続化する
-- Cloud Functions で `login`、`sendEmails`、`getCount` のエンドポイントを提供する
-- フロントエンドからは上記 Cloud Functions を呼び出すように修正する
-- Firestore のインデックス設計やアクセス権設定を検討する
+1. Firebase プロジェクトを作成し Firestore を有効化します。
+2. Cloud Functions のソースを配置したディレクトリで以下を実行します。
+   ```bash
+   gcloud functions deploy login --runtime nodejs18 --trigger-http --allow-unauthenticated
+   gcloud functions deploy sheetPuller --runtime nodejs18 --trigger-http --allow-unauthenticated
+   gcloud functions deploy sendMail --runtime nodejs18 --trigger-http --allow-unauthenticated
+   gcloud functions deploy getCount --runtime nodejs18 --trigger-http --allow-unauthenticated
+   ```
+3. 発行されたエンドポイント URL をフロントエンド設定に入力して利用します。
