@@ -24,9 +24,3 @@ function sendBulkEmails(userId) {
 
 }
 
-function sendBulkEmailsUI(token) {
-  var user = getUserFromToken(token);
-  if (!user) return 'Unauthorized';
-  sendBulkEmails(user.id);
-  return 'Emails sent';
-}
