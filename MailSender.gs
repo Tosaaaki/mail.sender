@@ -1,57 +1,27 @@
-function sendBulkEmails(senderId) {
-  if (!senderId) return;
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var sendSheet = ss.getSheetByName('送信先');
-  if (!sendSheet) return;
 
-  var values = sendSheet.getDataRange().getValues();
-  var logSheet = ss.getSheetByName('ログ');
-  if (!logSheet) logSheet = ss.insertSheet('ログ');
-  if (logSheet.getLastRow() === 0) {
-    logSheet.appendRow(['日時', '送信者', '宛先', '件名', '本文']);
-  }
-
-  for (var i = 1; i < values.length; i++) {
-    var row = values[i];
-    var recipient = row[0];
-    var subject = row[1];
-    var body = row[2];
-    if (!recipient) continue;
-    MailApp.sendEmail(recipient, subject, body);
-    logSheet.appendRow([new Date(), senderId, recipient, subject, body]);
-  }
-
-  updateSendCount(senderId);
+function incrementEmailCount(num) {
+  var props = PropertiesService.getScriptProperties();
+  var count = Number(props.getProperty('sendCount')) || 0;
+  count += num;
+  props.setProperty('sendCount', count);
 }
 
-function updateSendCount(senderId) {
-  var ss = SpreadsheetApp.getActiveSpreadsheet();
-  var logSheet = ss.getSheetByName('ログ');
-  if (!logSheet) return;
-  var countSheet = ss.getSheetByName('件数');
-  if (!countSheet) countSheet = ss.insertSheet('件数');
+function getEmailCount() {
+  return Number(PropertiesService.getScriptProperties().getProperty('sendCount')) || 0;
+}
 
-  var logs = logSheet.getDataRange().getValues();
-  var count = 0;
-  for (var i = 1; i < logs.length; i++) {
-    if (logs[i][1] === senderId) count++;
-  }
+function sendBulkEmails(userId) {
+  if (!userId) return 0;
+  var recipients = ['recipient1@example.com', 'recipient2@example.com'];
+  var subject = 'Bulk Email';
+  var body = 'Hello from the bulk mailer.';
+  recipients.forEach(function(email) {
+    MailApp.sendEmail(email, subject, body);
+  });
+  incrementEmailCount(recipients.length);
+  return recipients.length;
 
-  var summary = countSheet.getDataRange().getValues();
-  var updated = false;
-  for (var i = 1; i < summary.length; i++) {
-    if (summary[i][0] === senderId) {
-      countSheet.getRange(i + 1, 2).setValue(count);
-      updated = true;
-      break;
-    }
-  }
-  if (!updated) {
-    if (summary.length === 0) {
-      countSheet.appendRow(['ユーザーID', '件数']);
-    }
-    countSheet.appendRow([senderId, count]);
-  }
+
 }
 
 function sendBulkEmailsUI(token) {
