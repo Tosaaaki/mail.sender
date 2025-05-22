@@ -41,7 +41,19 @@ GCP 上でメール送信を行うサンプルです。Cloud Functions が API �
 Web アプリを開くと Firebase Authentication を用いたログイン画面が表示されます。ログイン成功時に取得した ID トークンはブラウザの `localStorage` に保存され、以降の API 呼び出し時に `Authorization` ヘッダーとして付与されます。
 
 ## フロントエンド利用方法
-ブラウザから index.html を開いてログインし、取得したトークンを使って各 API を呼び出します。設定ファイルに Cloud Functions の URL を入力しておくと、
+ブラウザから `index.html` を開くか、React の開発サーバを起動してログインします。開発サーバは次のコマンドで開始できます。
+
+```bash
+cd frontend && npm install && npm start
+```
+
+API を利用した後、本番環境用の静的ファイルを作成する場合は `frontend` ディレクトリで以下を実行します。
+
+```bash
+npm run build
+```
+
+ビルド結果は `frontend/build` 以下に生成されます。設定ファイルに Cloud Functions の URL を入力しておくと、
 ワンクリックで `sheetPuller` や `sendMail` を実行できます。`getCount` を呼び出すと送信状況が確認できます。
 
 ## API の利用方法
