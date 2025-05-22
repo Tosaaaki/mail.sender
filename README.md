@@ -70,4 +70,25 @@ Web アプリを開くと Firebase Authentication を用いたログイン画面
    gcloud functions deploy sendMail --runtime nodejs18 --trigger-http --allow-unauthenticated
    gcloud functions deploy getCount --runtime nodejs18 --trigger-http --allow-unauthenticated
    ```
-4. 発行されたエンドポイント URL をフロントエンド設定に入力して利用します。
+3. 発行されたエンドポイント URL をフロントエンド設定に入力して利用します。
+
+## Cloud Tasks と Cloud Scheduler の設定
+
+以下のコマンド例では `send-queue` というキューを作成し、最大再試行回数を 5 回、指数バックオフを有効にしています。
+```bash
+gcloud tasks queues create send-queue \
+  --max-attempts=5 \
+  --max-doublings=5 \
+  --location=asia-northeast1
+```
+
+続いて 5 分間隔で `sheetPuller` 関数を呼び出す Cloud Scheduler ジョブを作成します。サービスアカウントを指定して実行する例を示します。
+```bash
+gcloud scheduler jobs create http sheet-pull \
+  --schedule="*/5 * * * *" \
+  --http-method=POST \
+  --uri="https://asia-northeast1-PROJECT_ID.cloudfunctions.net/sheetPuller" \
+  --oidc-service-account-email=SERVICE_ACCOUNT@PROJECT_ID.iam.gserviceaccount.com
+```
+
+`functions/sheetPuller.ts` ではタスク作成時にキュー名とリージョンを `QUEUE_NAME` と `TASKS_REGION` の環境変数から取得します。`functions/sendMail.ts` は Cloud Tasks から送られる認証ヘッダーを検証してから処理を行います。
