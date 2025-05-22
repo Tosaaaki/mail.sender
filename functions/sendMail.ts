@@ -1,48 +1,30 @@
-import * as functions from 'firebase-functions';
-import * as admin from 'firebase-admin';
-import { google } from 'googleapis';
-import nodemailer from 'nodemailer';
+import { Request, Response } from 'express';
+import { OAuth2Client } from 'google-auth-library';
 
-admin.initializeApp();
+const client = new OAuth2Client();
 
-const secretName = process.env.SMTP_SECRET || '';
-
-export const sendMail = functions.https.onRequest(async (req, res) => {
-  try {
-    const data = req.body || {};
-    const auth = new google.auth.GoogleAuth({ scopes: ['https://www.googleapis.com/auth/cloud-platform'] });
-    const client = await auth.getClient();
-    const sm = google.secretmanager({ version: 'v1', auth: client });
-    const result = await sm.projects.secrets.versions.access({ name: secretName });
-    const payload = result.data.payload?.data || '';
-    const smtpInfo = JSON.parse(Buffer.from(payload, 'base64').toString());
-
-    const transporter = nodemailer.createTransport({
-      host: smtpInfo.host,
-      port: smtpInfo.port,
-      secure: smtpInfo.secure,
-      auth: { user: smtpInfo.user, pass: smtpInfo.pass }
-    });
-
-    const info = await transporter.sendMail({
-      from: smtpInfo.user,
-      to: data.to,
-      subject: data.subject,
-      text: data.text,
-      html: data.html
-    });
-
-    const doc = await admin.firestore().collection('emails').add({
-      to: data.to,
-      subject: data.subject,
-      messageId: info.messageId,
-      response: info.response,
-      createdAt: admin.firestore.FieldValue.serverTimestamp()
-    });
-
-    res.json({ id: doc.id });
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: String(err) });
+async function verifyTaskRequest(req: Request) {
+  const authHeader = req.get('Authorization') || '';
+  const match = authHeader.match(/^Bearer (.*)$/);
+  if (!match) throw new Error('Missing bearer token');
+  const token = match[1];
+  const audience = process.env.TASKS_AUDIENCE || '';
+  const ticket = await client.verifyIdToken({ idToken: token, audience });
+  const payload = ticket.getPayload();
+  const expected = process.env.TASKS_SERVICE_ACCOUNT;
+  if (!payload || payload.email !== expected) {
+    throw new Error('Invalid task token');
   }
-});
+}
+
+export const sendMail = async (req: Request, res: Response) => {
+  try {
+    await verifyTaskRequest(req);
+  } catch (err) {
+    res.status(401).send('Unauthorized');
+    return;
+  }
+
+  // 本来はここでメール送信処理を行う
+  res.json({ sent: true });
+};
