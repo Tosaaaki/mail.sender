@@ -3,7 +3,9 @@ function doGet(e) {
 }
 
 function unauthorized() {
-  return ContentService.createTextOutput('Unauthorized').setMimeType(ContentService.MimeType.TEXT);
+  return ContentService
+    .createTextOutput(JSON.stringify({ error: 'Unauthorized' }))
+    .setMimeType(ContentService.MimeType.JSON);
 }
 
 function doPost(e) {
@@ -26,8 +28,9 @@ function doPost(e) {
       return ContentService.createTextOutput(JSON.stringify({ count: count }))
         .setMimeType(ContentService.MimeType.JSON);
     default:
-      return ContentService.createTextOutput('Invalid action')
-        .setMimeType(ContentService.MimeType.TEXT);
+      return ContentService
+        .createTextOutput(JSON.stringify({ error: 'Invalid action' }))
+        .setMimeType(ContentService.MimeType.JSON);
 
   }
 }
