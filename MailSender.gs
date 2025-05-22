@@ -1,3 +1,4 @@
+
 function incrementEmailCount(num) {
   var props = PropertiesService.getScriptProperties();
   var count = Number(props.getProperty('sendCount')) || 0;
@@ -19,10 +20,12 @@ function sendBulkEmails(userId) {
   });
   incrementEmailCount(recipients.length);
   return recipients.length;
+
+
 }
 
-function sendBulkEmailsUI() {
-  var user = getUserFromToken('valid-token');
+function sendBulkEmailsUI(token) {
+  var user = getUserFromToken(token);
   if (!user) return 'Unauthorized';
   sendBulkEmails(user.id);
   return 'Emails sent';

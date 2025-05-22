@@ -1,3 +1,4 @@
+
 function login(username, password) {
   if (username === 'user' && password === 'pass') {
     var token = Utilities.getUuid();
@@ -16,4 +17,3 @@ function getUserFromToken(token) {
   if (!verifyLogin(token)) return null;
   var username = PropertiesService.getScriptProperties().getProperty('token_' + token);
   return { id: username, email: username + '@example.com' };
-}

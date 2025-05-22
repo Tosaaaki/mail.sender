@@ -28,5 +28,6 @@ function doPost(e) {
     default:
       return ContentService.createTextOutput('Invalid action')
         .setMimeType(ContentService.MimeType.TEXT);
+
   }
 }
