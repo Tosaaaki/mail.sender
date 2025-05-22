@@ -1,0 +1,9 @@
+{
+  "name": "mail.sender",
+  "version": "1.0.0",
+  "description": "Simple mail sender GAS project",
+  "scripts": {
+    "test": "node test.js"
+  },
+  "license": "MIT"
+}
