@@ -1,6 +1,6 @@
 import assert from 'assert';
-import { getCount } from './functions/lib/getCount.js';
-import { sendMail } from './functions/lib/sendMail.js';
+import { getCount } from './functions/dist/getCount.js';
+import { sendMail } from './functions/dist/sendMail.js';
 import * as admin from 'firebase-admin';
 
 // Test getCount
