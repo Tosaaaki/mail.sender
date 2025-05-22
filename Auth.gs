@@ -1,11 +1,19 @@
+function login(username, password) {
+  if (username === 'user' && password === 'pass') {
+    var token = Utilities.getUuid();
+    PropertiesService.getScriptProperties().setProperty('token_' + token, username);
+    return token;
+  }
+  return null;
+}
+
 function verifyLogin(token) {
   if (!token) return false;
-  // TODO: トークンの有効性を確認する処理を実装する
-  return token === 'valid-token';
+  return !!PropertiesService.getScriptProperties().getProperty('token_' + token);
 }
 
 function getUserFromToken(token) {
   if (!verifyLogin(token)) return null;
-  // TODO: トークンからユーザー情報を取得する処理を実装する
-  return { id: 'user1', email: 'user@example.com' };
+  var username = PropertiesService.getScriptProperties().getProperty('token_' + token);
+  return { id: username, email: username + '@example.com' };
 }
