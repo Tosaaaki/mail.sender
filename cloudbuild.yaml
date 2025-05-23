@@ -1,0 +1,27 @@
+steps:
+  # 依存関係をインストール
+  - name: 'node:20'
+    entrypoint: 'npm'
+    args: ['install']
+    dir: 'functions'
+
+  # TypeScriptをビルド
+  - name: 'node:20'
+    entrypoint: 'npm'
+    args: ['run', 'build']
+    dir: 'functions'
+
+  # Cloud Functionsへデプロイ
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - functions
+      - deploy
+      - sheetPuller
+      - --gen2
+      - --runtime=nodejs20
+      - --region=asia-northeast1
+      - --source=functions
+      - --entry-point=sheetPuller
+      - --trigger-http
+      - --allow-unauthenticated
+      - --set-env-vars=SHEET_ID=1mU0OJXnBUj6SlRCPSdWygeOkv1zBUj0GMM-EDS9SHxY,SEND_FN_URL=https://asia-northeast1-mail-sender-460609.cloudfunctions.net/sendMail

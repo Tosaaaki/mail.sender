@@ -1,24 +1,26 @@
 {
   "name": "functions",
+  "type": "module",
   "version": "1.0.0",
   "description": "Cloud Functions for mail sender",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc -p tsconfig.json",
-    "deploy": "npm run build"
+    "test": "npm run build",
+    "deploy": "npm run build",
+    "start": "functions-framework --source=dist/index.js --target=sheetPuller --signature-type=http"
   },
   "license": "MIT",
-  "type": "module",
   "dependencies": {
-    "firebase-admin": "^11.10.1",
+    "@google-cloud/functions-framework": "^4.0.0",
+    "@google-cloud/tasks": "^6.1.0",
+    "firebase-admin": "^13.4.0",
     "firebase-functions": "^4.4.1",
-    "nodemailer": "^6.9.11",
-    "googleapis": "^130.0.0"
+    "googleapis": "^130.0.0",
+    "nodemailer": "^6.9.11"
   },
   "devDependencies": {
-    "typescript": "^5.5.0",
     "@types/node": "*",
-    "@types/firebase-functions": "*",
-    "@types/google-auth-library": "*"
+    "typescript": "^5.5.0"
   }
 }

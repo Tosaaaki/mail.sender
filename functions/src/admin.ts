@@ -1,3 +1,10 @@
-import * as admin from 'firebase-admin';
-if (!admin.apps.length) admin.initializeApp();
+import * as firebaseAdmin from 'firebase-admin';
+
+/** Firebase Admin singleton (Node 20 + ESM) */
+const admin = firebaseAdmin as unknown as typeof firebaseAdmin;
+
+if (!admin.apps.length) {
+  admin.initializeApp();
+}
+
 export default admin;
