@@ -3,7 +3,7 @@ import { CloudTasksClient } from '@google-cloud/tasks';
 
 const client = new CloudTasksClient();
 
-export const sheetPuller = functions.https.onRequest(async (req, res) => {
+export const sheetPuller = functions.https.onRequest(async (req: any, res: any) => {
   const queue = process.env.QUEUE_NAME;
   const region = process.env.TASKS_REGION;
   const project = process.env.GCP_PROJECT || process.env.PROJECT_ID;

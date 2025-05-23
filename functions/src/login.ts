@@ -2,7 +2,7 @@ import * as functions from 'firebase-functions';
 
 const apiKey = process.env.FIREBASE_API_KEY || '';
 
-export const login = functions.https.onRequest(async (req, res) => {
+export const login = functions.https.onRequest(async (req: any, res: any) => {
   const { email, password } = req.body || {};
   if (!email || !password) {
     res.status(400).json({ error: 'missing credentials' });
