@@ -1,6 +1,6 @@
 import * as functions from 'firebase-functions';
 import { OAuth2Client } from 'google-auth-library';
-import admin from './admin';
+import admin from './admin.js';
 
 const client = new OAuth2Client();
 
@@ -18,7 +18,7 @@ async function verifyTaskRequest(req: functions.https.Request) {
   }
 }
 
-export const sendMail = functions.https.onRequest(async (req, res) => {
+export const sendMail = functions.https.onRequest(async (req: any, res: any) => {
   try {
     await verifyTaskRequest(req);
   } catch (err) {

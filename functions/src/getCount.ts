@@ -1,7 +1,7 @@
 import * as functions from 'firebase-functions';
-import admin from './admin';
+import admin from './admin.js';
 
-export const getCount = functions.https.onRequest(async (_req, res) => {
+export const getCount = functions.https.onRequest(async (_req: any, res: any) => {
   const senderId = 'default';
   try {
     const snap = await admin.firestore().doc(`counters/${senderId}`).get();
