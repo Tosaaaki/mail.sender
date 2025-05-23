@@ -89,6 +89,11 @@ npm run build
    gcloud functions deploy getCount --runtime nodejs18 --trigger-http --allow-unauthenticated
    ```
 3. 発行されたエンドポイント URL をフロントエンド設定に入力して利用します。
+   `frontend` ディレクトリに `.env` ファイルを作成し、次のように設定します。
+   ```
+   REACT_APP_FUNCTIONS_BASE_URL=https://asia-northeast1-PROJECT_ID.cloudfunctions.net
+   ```
+   ここで `REACT_APP_FUNCTIONS_BASE_URL` には Cloud Functions のベース URL を指定します。
 
 ## Cloud Tasks と Cloud Scheduler の設定
 
