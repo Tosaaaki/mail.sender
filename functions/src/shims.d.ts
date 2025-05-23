@@ -33,9 +33,9 @@ declare module '@google-cloud/tasks' {
 }
 
 declare module 'google-auth-library' {
-  export class OAuth2Client {
-    verifyIdToken(options: any): Promise<{ getPayload(): any }>;
+export class OAuth2Client {
+      verifyIdToken(options: any): Promise<{ getPayload(): any }>;
+    }
   }
-}
 
 declare const process: any;
