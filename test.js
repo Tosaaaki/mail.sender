@@ -1,15 +1,6 @@
 import assert from 'assert';
-import fs from 'fs';
-import * as admin from 'firebase-admin';
-
-if (!fs.existsSync('./functions/dist/admin')) {
-  try {
-    fs.copyFileSync('./functions/dist/admin.js', './functions/dist/admin');
-  } catch (err) {
-    // ignore if copy fails
-  }
-}
-
+process.env.USE_ADMIN_STUB = '1';
+import * as admin from './functions/dist/admin-stub.js';
 
 const { getCount } = await import('./functions/dist/getCount.js');
 const { sendMail } = await import('./functions/dist/sendMail.js');
