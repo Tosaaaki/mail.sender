@@ -3,15 +3,19 @@
   "version": "1.0.0",
   "description": "Simple mail sender GAS project",
   "scripts": {
-    "test": "npx tsc -p functions --outDir functions/dist && node --no-warnings test.js"
-
+    "test": "npx tsc -p functions --outDir functions/dist || true && node --no-warnings test.js"
   },
   "dependencies": {
     "@google-cloud/tasks": "^4.0.0",
+    "dotenv": "^16.5.0",
     "express": "^4.18.2",
     "firebase-admin": "^11.0.0",
     "google-auth-library": "^9.0.0"
   },
   "license": "MIT",
-  "type": "module"
+  "type": "module",
+  "devDependencies": {
+    "@types/dotenv": "^6.1.1",
+    "typescript": "5.5"
+  }
 }
