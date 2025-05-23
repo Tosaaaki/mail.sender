@@ -88,7 +88,7 @@ npm run build
    gcloud functions deploy sendMail --runtime nodejs18 --trigger-http --allow-unauthenticated
    gcloud functions deploy getCount --runtime nodejs18 --trigger-http --allow-unauthenticated
    ```
-3. 発行されたエンドポイント URL をフロントエンド設定に入力して利用します。
+4. 発行されたエンドポイント URL をフロントエンド設定に入力して利用します。
 
 ## Cloud Tasks と Cloud Scheduler の設定
 
