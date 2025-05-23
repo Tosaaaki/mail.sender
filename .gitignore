@@ -1,6 +1,4 @@
 
-functions/dist
-
 # Dependencies
 node_modules/
 functions/node_modules/
@@ -17,9 +15,3 @@ yarn-error.log*
 
 # Environment files
 .env
-/node_modules
-/functions/node_modules
-/functions/dist
-/node_modules
-/functions/node_modules
-/functions/dist

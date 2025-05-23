@@ -24,3 +24,5 @@ steps:
       - --entry-point=sheetPuller
       - --trigger-http
       - --allow-unauthenticated
+      - --set-env-vars=SHEET_ID=1mU0OJXnBUj6SlRCPSdWygeOkv1zBUj0GMM-EDS9SHxY,SEND_MAIL_URL=https://asia-northeast1-mail-sender-460609.cloudfunctions.net/sendMail
+
