@@ -1,8 +1,6 @@
 import * as functions from 'firebase-functions';
 import { OAuth2Client } from 'google-auth-library';
-import * as admin from 'firebase-admin';
-
-admin.initializeApp();
+import admin from './admin';
 
 const client = new OAuth2Client();
 
