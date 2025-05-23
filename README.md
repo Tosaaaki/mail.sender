@@ -22,10 +22,11 @@ GCP 上でメール送信を行うサンプルです。Cloud Functions が API �
 
 ## 利用手順
 1. このリポジトリをクローンします。
-2. ルートの `.env.example` をコピーして `.env` を作成し、各値を設定します。
+2. ルートの `.env.example` と `frontend/.env.example` をコピーし、それぞれ `.env` を作成して値を設定します。
    ```bash
    cp .env.example .env
-   # エディタで .env を編集
+   cp frontend/.env.example frontend/.env
+   # エディタで .env と frontend/.env を編集
    ```
 3. 必要に応じて `npm install` を実行します（現状依存パッケージはありません）。
 4. `npm test` を実行しテストが成功することを確認します。

@@ -13,6 +13,8 @@ const Signup: React.FC = () => {
     if (auth.currentUser) {
       await updateProfile(auth.currentUser, { displayName: name });
       await sendEmailVerification(auth.currentUser);
+      const token = await auth.currentUser.getIdToken();
+      localStorage.setItem('token', token);
     }
     console.log('Signed up:', credential.user.uid);
   };
