@@ -30,7 +30,12 @@ const Review: React.FC = () => {
       const ref = doc(db, 'emails', email.id);
       transaction.update(ref, { reviewed: true });
     });
-    await fetch('/sendMail', { method: 'POST' });
+    const token = localStorage.getItem('token');
+    const baseUrl = process.env.REACT_APP_FUNCTIONS_BASE_URL || '';
+    await fetch(`${baseUrl}/sendMail`, {
+      method: 'POST',
+      headers: token ? { Authorization: `Bearer ${token}` } : undefined,
+    });
     fetchPending();
   };
 
