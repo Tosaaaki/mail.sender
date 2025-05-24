@@ -29,7 +29,7 @@ GCP 上でメール送信を行うサンプルです。Cloud Functions が API �
    # エディタで .env と frontend/.env を編集
    ```
    `.env` に含まれる `FIREBASE_API_KEY` は `<YOUR_FIREBASE_API_KEY>` というダミー値です。実際の Firebase API キーに置き換えてください。
-   また `SHEET_ID` には sheetPuller が参照するスプレッドシートの ID を入力します。
+   `SHEET_ID` は sheetPuller が参照するスプレッドシートの ID、`SHEET_NAME` は対象シート名、`SHEET_RANGE` は取得する列範囲を入力します。
    フロントエンドの `.env` では `REACT_APP_FUNCTIONS_BASE_URL` に Cloud Functions のベース URL を設定してください。
 3. 依存パッケージをインストールします。
    ```bash
