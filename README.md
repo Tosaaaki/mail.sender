@@ -28,6 +28,7 @@ GCP 上でメール送信を行うサンプルです。Cloud Functions が API �
    cp frontend/.env.example frontend/.env
    # エディタで .env と frontend/.env を編集
    ```
+   `.env` に含まれる `FIREBASE_API_KEY` は `<YOUR_FIREBASE_API_KEY>` というダミー値です。実際の Firebase API キーに置き換えてください。
    フロントエンドの `.env` では `REACT_APP_FUNCTIONS_BASE_URL` に Cloud Functions のベース URL を設定してください。
 3. 必要に応じて `npm install` を実行します（現状依存パッケージはありません）。
 4. `npm test` を実行しテストが成功することを確認します。
