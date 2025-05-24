@@ -50,4 +50,20 @@ await sendMail(req3, res3);
 assert.strictEqual(res3.statusCode, 401);
 assert.strictEqual(res3.body, 'Unauthorized');
 
+// Test sheetPuller with stubbed Sheets data
+const { sheetPuller } = await import('./functions/dist/sheetPuller.js');
+const sheetsStub = await import('./functions/dist/googleapis-stub.js');
+sheetsStub.__setValues([
+  ['1', 'b1', 'c1', 'd1', 'e1', 'f1', 'g1'],
+  ['2', 'b2', 'c2', 'd2', 'e2', 'f2', 'g2']
+]);
+process.env.SHEET_ID = 'dummy';
+process.env.GOOGLE_API_KEY = 'dummy';
+const res4 = { statusCode: 200, body: null, json(d){this.body=d;}, status(c){this.statusCode=c; return this;} };
+await sheetPuller({}, res4);
+assert.strictEqual(res4.statusCode, 200);
+assert.deepStrictEqual(res4.body, { count: 2 });
+assert.deepStrictEqual(admin.__getData('mailData/1'), { B: 'b1', C: 'c1', D: 'd1', E: 'e1', F: 'f1', G: 'g1' });
+assert.deepStrictEqual(admin.__getData('mailData/2'), { B: 'b2', C: 'c2', D: 'd2', E: 'e2', F: 'f2', G: 'g2' });
+
 console.log('Tests passed');
