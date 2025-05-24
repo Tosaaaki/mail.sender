@@ -24,5 +24,46 @@ steps:
       - --entry-point=sheetPuller
       - --trigger-http
       - --allow-unauthenticated
-      - --set-env-vars=SHEET_ID=1mU0OJXnBUj6SlRCPSdWygeOkv1zBUj0GMM-EDS9SHxY,SEND_MAIL_URL=https://asia-northeast1-mail-sender-460609.cloudfunctions.net/sendMail
+      - --set-env-vars=SHEET_ID=1mU0OJXnBUj6SlRCPSdWygeOkv1zBUj0GMM-EDS9SHxY,SEND_MAIL_URL=https://asia-northeast1-mail-sender-460609.cloudfunctions.net/sendMail,QUEUE_NAME=mail-queue,TASKS_REGION=asia-northeast1,TASKS_SERVICE_ACCOUNT=tasks-invoker@mail-sender-460609.iam.gserviceaccount.com
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - functions
+      - deploy
+      - sendMail
+      - --gen2
+      - --runtime=nodejs20
+      - --region=asia-northeast1
+      - --source=functions
+      - --entry-point=sendMail
+      - --trigger-http
+      - --allow-unauthenticated
+      - --set-env-vars=TASKS_AUDIENCE=https://asia-northeast1-mail-sender-460609.cloudfunctions.net/sendMail,TASKS_SERVICE_ACCOUNT=tasks-invoker@mail-sender-460609.iam.gserviceaccount.com
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - functions
+      - deploy
+      - login
+      - --gen2
+      - --runtime=nodejs20
+      - --region=asia-northeast1
+      - --source=functions
+      - --entry-point=login
+      - --trigger-http
+      - --allow-unauthenticated
+      - --set-env-vars=FIREBASE_API_KEY=AIzaSyCAqb19fkZxRu40rGOpJp5wHGvLAjSzOdM
+
+  - name: 'gcr.io/cloud-builders/gcloud'
+    args:
+      - functions
+      - deploy
+      - getCount
+      - --gen2
+      - --runtime=nodejs20
+      - --region=asia-northeast1
+      - --source=functions
+      - --entry-point=getCount
+      - --trigger-http
+      - --allow-unauthenticated
 
