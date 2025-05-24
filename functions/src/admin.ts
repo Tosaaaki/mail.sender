@@ -12,7 +12,8 @@ if (process.env.USE_ADMIN_STUB) {
 const admin = firebaseAdmin.default ?? firebaseAdmin;
 
 if (!admin.apps.length) {
-  admin.initializeApp();
+  const projectId = process.env.GCP_PROJECT || process.env.PROJECT_ID;
+  admin.initializeApp(projectId ? { projectId } : undefined);
 }
 
 export default admin;
