@@ -1,3 +1,12 @@
+substitutions:
+  _SHEET_ID: ''
+  _SEND_MAIL_URL: ''
+  _QUEUE_NAME: ''
+  _TASKS_REGION: ''
+  _TASKS_SERVICE_ACCOUNT: ''
+  _TASKS_AUDIENCE: ''
+  _FIREBASE_API_KEY: ''
+
 steps:
   # 依存関係をインストール
   - name: 'node:20'
@@ -24,7 +33,7 @@ steps:
       - --entry-point=sheetPuller
       - --trigger-http
       - --allow-unauthenticated
-      - --set-env-vars=SHEET_ID=1mU0OJXnBUj6SlRCPSdWygeOkv1zBUj0GMM-EDS9SHxY,SEND_MAIL_URL=https://asia-northeast1-mail-sender-460609.cloudfunctions.net/sendMail,QUEUE_NAME=mail-queue,TASKS_REGION=asia-northeast1,TASKS_SERVICE_ACCOUNT=tasks-invoker@mail-sender-460609.iam.gserviceaccount.com
+      - --set-env-vars=SHEET_ID=$_SHEET_ID,SEND_MAIL_URL=$_SEND_MAIL_URL,QUEUE_NAME=$_QUEUE_NAME,TASKS_REGION=$_TASKS_REGION,TASKS_SERVICE_ACCOUNT=$_TASKS_SERVICE_ACCOUNT
 
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
@@ -38,7 +47,7 @@ steps:
       - --entry-point=sendMail
       - --trigger-http
       - --allow-unauthenticated
-      - --set-env-vars=TASKS_AUDIENCE=https://asia-northeast1-mail-sender-460609.cloudfunctions.net/sendMail,TASKS_SERVICE_ACCOUNT=tasks-invoker@mail-sender-460609.iam.gserviceaccount.com
+      - --set-env-vars=TASKS_AUDIENCE=$_TASKS_AUDIENCE,TASKS_SERVICE_ACCOUNT=$_TASKS_SERVICE_ACCOUNT
 
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
@@ -52,7 +61,7 @@ steps:
       - --entry-point=login
       - --trigger-http
       - --allow-unauthenticated
-      - --set-env-vars=FIREBASE_API_KEY=AIzaSyCAqb19fkZxRu40rGOpJp5wHGvLAjSzOdM
+      - --set-env-vars=FIREBASE_API_KEY=$_FIREBASE_API_KEY
 
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
