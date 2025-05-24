@@ -34,6 +34,18 @@ GCP 上でメール送信を行うサンプルです。Cloud Functions が API �
 
 このコマンドは Node.js の assert モジュールを利用した簡単なテストを実行し、環境が正しく設定されていることを確認します。
 
+### Firestore へ接続できない場合
+Firestore に接続できない場合は、以下の点を確認してください。
+
+1. `.env` と `frontend/.env` の Firebase 関連の設定値が正しいか
+   - `FIREBASE_API_KEY`
+   - `REACT_APP_FIREBASE_API_KEY`
+   - `REACT_APP_FIREBASE_AUTH_DOMAIN`
+   - `REACT_APP_FIREBASE_PROJECT_ID`
+   - `REACT_APP_FUNCTIONS_BASE_URL`
+2. Firebase コンソールで Firestore が有効になっているか
+3. Firebase コンソールで認証ドメインが許可されているか
+
 ### ワークフロー
 1. `sheetPuller` 関数でスプレッドシートの内容を Firestore に取り込みます。
 2. `sendMail` 関数を呼び出してメールを送信します。処理後は送信件数が Firestore に記録されます。
@@ -91,6 +103,7 @@ npm run build
    gcloud functions deploy getCount --runtime nodejs18 --trigger-http --allow-unauthenticated
    ```
 4. 発行されたエンドポイント URL をフロントエンド設定に入力して利用します。
+
 5. Cloud Build で全関数をデプロイする場合は次のコマンドを実行します。
    ```bash
    gcloud builds submit --config cloudbuild.yaml

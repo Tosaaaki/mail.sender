@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Simple mail sender GAS project",
   "scripts": {
-    "test": "npx tsc -p functions --outDir functions/dist || true && node --no-warnings test.js"
+    "test": "npx tsc -p functions --outDir functions/dist || true && node --no-warnings test.js && node --no-warnings test_login.js"
   },
   "dependencies": {
     "@google-cloud/tasks": "^4.0.0",
