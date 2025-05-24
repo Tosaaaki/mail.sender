@@ -91,6 +91,10 @@ npm run build
    gcloud functions deploy getCount --runtime nodejs18 --trigger-http --allow-unauthenticated
    ```
 4. 発行されたエンドポイント URL をフロントエンド設定に入力して利用します。
+5. Cloud Build で全関数をデプロイする場合は次のコマンドを実行します。
+   ```bash
+   gcloud builds submit --config cloudbuild.yaml
+   ```
 
 ## Cloud Tasks と Cloud Scheduler の設定
 
