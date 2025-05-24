@@ -29,7 +29,13 @@ GCP 上でメール送信を行うサンプルです。Cloud Functions が API �
    # エディタで .env と frontend/.env を編集
    ```
    フロントエンドの `.env` では `REACT_APP_FUNCTIONS_BASE_URL` に Cloud Functions のベース URL を設定してください。
-3. 必要に応じて `npm install` を実行します（現状依存パッケージはありません）。
+3. 依存パッケージをインストールします。
+   ```bash
+   npm install
+   cd functions && npm install
+   cd ../frontend && npm install
+   cd ..
+   ```
 4. `npm test` を実行しテストが成功することを確認します。
 
 このコマンドは Node.js の assert モジュールを利用した簡単なテストを実行し、環境が正しく設定されていることを確認します。
