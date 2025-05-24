@@ -31,6 +31,32 @@ GCP 上でメール送信を行うサンプルです。Cloud Functions が API �
    `.env` に含まれる `FIREBASE_API_KEY` は `<YOUR_FIREBASE_API_KEY>` というダミー値です。実際の Firebase API キーに置き換えてください。
    `SHEET_ID` は sheetPuller が参照するスプレッドシートの ID、`SHEET_NAME` は対象シート名、`SHEET_RANGE` は取得する列範囲を入力します。
    フロントエンドの `.env` では `REACT_APP_FUNCTIONS_BASE_URL` に Cloud Functions のベース URL を設定してください。
+
+   ### 環境変数設定例（functions 用）
+
+   ```env
+   GOOGLE_API_KEY=あなたのGoogle Sheets APIキー
+   SHEET_ID=スプレッドシートのID
+   SHEET_NAME=対象シート名（例: 一覧・操作）
+   SHEET_RANGE=取得する範囲（例: A:G）
+   FIREBASE_API_KEY=FirebaseのAPIキー
+   TASKS_AUDIENCE=Cloud Tasksの認証先URL（sendMail関数のURL）
+   TASKS_SERVICE_ACCOUNT=Cloud Tasksが使用するサービスアカウント
+   QUEUE_NAME=Cloud Tasksキューの名前
+   TASKS_REGION=Cloud Tasksのリージョン（例: asia-northeast1）
+   SEND_MAIL_URL=sendMail関数のURL
+   PROJECT_ID=GCPのプロジェクトID（ローカル用）
+   GCP_PROJECT=GCPのプロジェクトID（デプロイ用）
+   ```
+
+   ### フロントエンド（React）の環境変数設定例
+
+   ```env
+   REACT_APP_FIREBASE_API_KEY=FirebaseのAPIキー
+   REACT_APP_FIREBASE_AUTH_DOMAIN=Firebaseの認証ドメイン（例: your-project.firebaseapp.com）
+   REACT_APP_FIREBASE_PROJECT_ID=FirebaseのプロジェクトID
+   REACT_APP_FUNCTIONS_BASE_URL=Cloud FunctionsのベースURL（例: https://asia-northeast1-your-project.cloudfunctions.net）
+   ```
 3. 依存パッケージをインストールします。
    ```bash
    npm install
@@ -38,7 +64,12 @@ GCP 上でメール送信を行うサンプルです。Cloud Functions が API �
    cd ../frontend && npm install
    cd ..
    ```
-4. `npm test` を実行しテストが成功することを確認します。
+4. Firestore をローカルで利用する場合、最初に Application Default Credentials を設定します。
+
+   ```bash
+   gcloud auth application-default login
+   ```
+5. `npm test` を実行しテストが成功することを確認します。
 
 このコマンドは Node.js の assert モジュールを利用した簡単なテストを実行し、環境が正しく設定されていることを確認します。
 
@@ -135,6 +166,15 @@ gcloud scheduler jobs create http sheet-pull \
   --schedule="*/5 * * * *" \
   --http-method=POST \
   --uri="https://asia-northeast1-PROJECT_ID.cloudfunctions.net/sheetPuller" \
+  --oidc-service-account-email=SERVICE_ACCOUNT@PROJECT_ID.iam.gserviceaccount.com
+```
+
+続けて `sendMail` を定期実行するジョブを作成する例です。
+```bash
+gcloud scheduler jobs create http send-mail \
+  --schedule="0 * * * *" \
+  --http-method=POST \
+  --uri="https://asia-northeast1-PROJECT_ID.cloudfunctions.net/sendMail" \
   --oidc-service-account-email=SERVICE_ACCOUNT@PROJECT_ID.iam.gserviceaccount.com
 ```
 
