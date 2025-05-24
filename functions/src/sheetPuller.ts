@@ -11,7 +11,10 @@ try {
 export const sheetPuller = functions.https.onRequest(async (_req: any, res: any) => {
   const apiKey = process.env.GOOGLE_API_KEY;
   const sheetId = process.env.SHEET_ID;
-  if (!apiKey || !sheetId) {
+  // シート名と取得範囲は環境変数から取得する
+  const sheetName = process.env.SHEET_NAME;
+  const sheetRange = process.env.SHEET_RANGE || 'A:G';
+  if (!apiKey || !sheetId || !sheetName) {
     res.status(500).send('Missing environment configuration');
     return;
   }
@@ -19,7 +22,7 @@ export const sheetPuller = functions.https.onRequest(async (_req: any, res: any)
     const sheets = google.sheets({ version: 'v4', auth: apiKey });
     const result = await sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
-      range: 'A:G',
+      range: `${sheetName}!${sheetRange}`,
     });
     const values = result.data.values || [];
     for (const row of values) {

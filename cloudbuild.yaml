@@ -1,5 +1,7 @@
 substitutions:
   _SHEET_ID: ''
+  _SHEET_NAME: ''
+  _SHEET_RANGE: ''
   _SEND_MAIL_URL: ''
   _QUEUE_NAME: ''
   _TASKS_REGION: ''
@@ -33,7 +35,7 @@ steps:
       - --entry-point=sheetPuller
       - --trigger-http
       - --allow-unauthenticated
-      - --set-env-vars=SHEET_ID=$_SHEET_ID,SEND_MAIL_URL=$_SEND_MAIL_URL,QUEUE_NAME=$_QUEUE_NAME,TASKS_REGION=$_TASKS_REGION,TASKS_SERVICE_ACCOUNT=$_TASKS_SERVICE_ACCOUNT
+      - --set-env-vars=SHEET_ID=$_SHEET_ID,SHEET_NAME=$_SHEET_NAME,SHEET_RANGE=$_SHEET_RANGE,SEND_MAIL_URL=$_SEND_MAIL_URL,QUEUE_NAME=$_QUEUE_NAME,TASKS_REGION=$_TASKS_REGION,TASKS_SERVICE_ACCOUNT=$_TASKS_SERVICE_ACCOUNT
 
   - name: 'gcr.io/cloud-builders/gcloud'
     args:
