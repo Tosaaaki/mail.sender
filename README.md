@@ -104,10 +104,12 @@ npm run build
    ```
 4. 発行されたエンドポイント URL をフロントエンド設定に入力して利用します。
 
-5. Cloud Build で全関数をデプロイする場合は次のコマンドを実行します。
+5. Cloud Build で全関数をデプロイする場合は、`cloudbuild.yaml` に定義された Substitution 変数を指定してビルドを実行します。
    ```bash
-   gcloud builds submit --config cloudbuild.yaml
+   gcloud builds submit --config cloudbuild.yaml \
+     --substitutions=_SHEET_ID=<SHEET_ID>,_SEND_MAIL_URL=<SEND_MAIL_URL>,_QUEUE_NAME=<QUEUE_NAME>,_TASKS_REGION=<TASKS_REGION>,_TASKS_SERVICE_ACCOUNT=<TASKS_SA>,_TASKS_AUDIENCE=<TASKS_AUDIENCE>,_FIREBASE_API_KEY=<API_KEY>
    ```
+   Secret Manager を利用する場合は、`--substitutions` の代わりに `--set-secrets` を用いて環境変数を設定してください。
 
 ## Cloud Tasks と Cloud Scheduler の設定
 
