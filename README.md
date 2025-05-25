@@ -29,7 +29,7 @@ GCP 上でメール送信を行うサンプルです。Cloud Functions が API �
    # エディタで .env と frontend/.env を編集
    ```
    `.env` に含まれる `FIREBASE_API_KEY` は `<YOUR_FIREBASE_API_KEY>` というダミー値です。実際の Firebase API キーに置き換えてください。
-   `SHEET_ID` は sheetPuller が参照するスプレッドシートの ID、`SHEET_NAME` は対象シート名、`SHEET_RANGE` は取得する列範囲を入力します。
+   `SHEET_ID` は sheetPuller が参照するスプレッドシートの ID、`SHEET_NAME` は対象シート名、`SHEET_RANGE` は取得する列範囲を入力します。`SHEET_FIELD_MAP` を設定すると列番号と Firestore フィールドの対応を変更できます。
    フロントエンドの `.env` では `REACT_APP_FUNCTIONS_BASE_URL` に Cloud Functions のベース URL を設定してください。
 
    ### 環境変数設定例（functions 用）
@@ -39,6 +39,7 @@ GCP 上でメール送信を行うサンプルです。Cloud Functions が API �
    SHEET_ID=スプレッドシートのID
    SHEET_NAME=対象シート名（例: 一覧・操作）
    SHEET_RANGE=取得する範囲（例: A:G）
+   SHEET_FIELD_MAP={"id":0,"send_date":0,"progress":1,"manager_name":2,"number":3,"facility_name":4,"operator_name":5,"email":6}
    FIREBASE_API_KEY=FirebaseのAPIキー
    TASKS_AUDIENCE=Cloud Tasksの認証先URL（sendMail関数のURL）
    TASKS_SERVICE_ACCOUNT=Cloud Tasksが使用するサービスアカウント
