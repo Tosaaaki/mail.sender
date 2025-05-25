@@ -75,7 +75,7 @@ const res4 = { statusCode: 200, body: null, json(d){this.body=d;}, status(c){thi
 await sheetPuller({}, res4);
 assert.strictEqual(res4.statusCode, 200);
 assert.deepStrictEqual(res4.body, { pulled: 2 });
-assert.deepStrictEqual(admin.__getData('mailData/1'), {
+assert.deepStrictEqual(admin.__getData('mailData/d1'), {
   send_date: '1',
   progress: 'b1',
   manager_name: 'c1',
@@ -84,7 +84,7 @@ assert.deepStrictEqual(admin.__getData('mailData/1'), {
   operator_name: 'f1',
   email: 'g1'
 });
-assert.deepStrictEqual(admin.__getData('mailData/2'), {
+assert.deepStrictEqual(admin.__getData('mailData/d2'), {
   send_date: '2',
   progress: 'b2',
   manager_name: 'c2',

@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions';
 import admin from './admin.js';
 import dotenv from 'dotenv';
+import { randomUUID } from 'crypto';
 
 dotenv.config();
 // admin.initializeApp(); ← 削除します
@@ -61,6 +62,7 @@ export const sheetPuller = functions.https.onRequest(async (_req: any, res: any)
     const idIndex = fieldMap.id ?? 0;
 
     values.slice(1).forEach((row: string[]) => {
+
       const id = row[idIndex];
       if (!id) return;
       const docRef = db.collection('mailData').doc(id);
