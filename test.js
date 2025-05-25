@@ -61,6 +61,16 @@ process.env.SHEET_ID = 'dummy';
 process.env.SHEET_NAME = 'Sheet1';
 process.env.SHEET_RANGE = 'A:G';
 process.env.GOOGLE_API_KEY = 'dummy';
+process.env.SHEET_FIELD_MAP = JSON.stringify({
+  id: 0,
+  send_date: 0,
+  progress: 1,
+  manager_name: 2,
+  number: 3,
+  facility_name: 4,
+  operator_name: 5,
+  email: 6
+});
 const res4 = { statusCode: 200, body: null, json(d){this.body=d;}, status(c){this.statusCode=c; return this;} };
 await sheetPuller({}, res4);
 assert.strictEqual(res4.statusCode, 200);

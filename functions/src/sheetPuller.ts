@@ -15,6 +15,29 @@ try {
 
 const db = admin.firestore();
 
+type ColumnMap = Record<string, number>;
+
+function getFieldMap(): ColumnMap {
+  const defaultMap: ColumnMap = {
+    id: 0,
+    send_date: 0,
+    progress: 1,
+    manager_name: 2,
+    number: 3,
+    facility_name: 4,
+    operator_name: 5,
+    email: 6,
+  };
+  const env = process.env.SHEET_FIELD_MAP;
+  if (!env) return defaultMap;
+  try {
+    const parsed = JSON.parse(env);
+    return { ...defaultMap, ...parsed };
+  } catch {
+    return defaultMap;
+  }
+}
+
 export const sheetPuller = functions.https.onRequest(async (_req: any, res: any) => {
   const apiKey = process.env.GOOGLE_API_KEY;
   const sheetId = process.env.SHEET_ID;
@@ -35,19 +58,20 @@ export const sheetPuller = functions.https.onRequest(async (_req: any, res: any)
 
     const values = result.data.values || [];
     const batch = db.batch();
+    const fieldMap = getFieldMap();
+    const idIndex = fieldMap.id ?? 0;
 
     values.slice(1).forEach((row: string[]) => {
-      const id = row[3] || randomUUID();
+
+      const id = row[idIndex];
+      if (!id) return;
       const docRef = db.collection('mailData').doc(id);
-      batch.set(docRef, {
-        send_date: row[0] || '',
-        progress: row[1] || '',
-        manager_name: row[2] || '',
-        number: row[3] || '',
-        facility_name: row[4] || '',
-        operator_name: row[5] || '',
-        email: row[6] || '',
+      const data: Record<string, string> = {};
+      Object.entries(fieldMap).forEach(([field, idx]) => {
+        if (field === 'id') return;
+        data[field] = row[idx] || '';
       });
+      batch.set(docRef, data);
     });
 
     await batch.commit();
