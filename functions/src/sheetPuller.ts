@@ -1,6 +1,7 @@
 import * as functions from 'firebase-functions';
 import admin from './admin.js';
 import dotenv from 'dotenv';
+import { randomUUID } from 'crypto';
 
 dotenv.config();
 // admin.initializeApp(); ← 削除します
@@ -36,8 +37,7 @@ export const sheetPuller = functions.https.onRequest(async (_req: any, res: any)
     const batch = db.batch();
 
     values.slice(1).forEach((row: string[]) => {
-      const id = row[0];
-      if (!id) return;
+      const id = row[3] || randomUUID();
       const docRef = db.collection('mailData').doc(id);
       batch.set(docRef, {
         send_date: row[0] || '',
