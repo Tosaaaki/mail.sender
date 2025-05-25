@@ -64,8 +64,24 @@ process.env.GOOGLE_API_KEY = 'dummy';
 const res4 = { statusCode: 200, body: null, json(d){this.body=d;}, status(c){this.statusCode=c; return this;} };
 await sheetPuller({}, res4);
 assert.strictEqual(res4.statusCode, 200);
-assert.deepStrictEqual(res4.body, { count: 2 });
-assert.deepStrictEqual(admin.__getData('mailData/1'), { B: 'b1', C: 'c1', D: 'd1', E: 'e1', F: 'f1', G: 'g1' });
-assert.deepStrictEqual(admin.__getData('mailData/2'), { B: 'b2', C: 'c2', D: 'd2', E: 'e2', F: 'f2', G: 'g2' });
+assert.deepStrictEqual(res4.body, { pulled: 2 });
+assert.deepStrictEqual(admin.__getData('mailData/1'), {
+  send_date: '1',
+  progress: 'b1',
+  manager_name: 'c1',
+  number: 'd1',
+  facility_name: 'e1',
+  operator_name: 'f1',
+  email: 'g1'
+});
+assert.deepStrictEqual(admin.__getData('mailData/2'), {
+  send_date: '2',
+  progress: 'b2',
+  manager_name: 'c2',
+  number: 'd2',
+  facility_name: 'e2',
+  operator_name: 'f2',
+  email: 'g2'
+});
 
 console.log('Tests passed');
