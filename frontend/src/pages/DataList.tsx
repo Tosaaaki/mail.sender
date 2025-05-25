@@ -9,26 +9,34 @@ type MailRow = {
 
 const DataList: React.FC = () => {
   const [rows, setRows] = useState<MailRow[]>([]);
-  const [error, setError] = useState<string | null>(null); // エラー表示用
+  const [loading, setLoading] = useState(false);
+  const pullerUrl = process.env.REACT_APP_SHEET_PULLER_URL!;
 
-  useEffect(() => {
-    // Firestore からデータ取得
-    (async () => {
-      try {
-        const snap = await getDocs(collection(db, 'mailData'));
-        setRows(snap.docs.map(d => d.data() as MailRow));
-      } catch (err) {
-        console.error(err);
-        setError('Error loading data');
-      }
-    })();
-  }, []);
+  // Firestore から読み込む
+  const fetchRows = async () => {
+    const snap = await getDocs(collection(db, 'mailData'));
+    setRows(snap.docs.map(d => d.data() as MailRow));
+  };
+
+  // sheetPuller → Firestore → 画面更新
+  const runSheetPuller = async () => {
+    setLoading(true);
+    await fetch(pullerUrl, { method: 'POST' });
+    await fetchRows();
+    setLoading(false);
+  };
+
+  useEffect(() => { fetchRows(); }, []);
 
   return (
     <div style={{ padding: 24 }}>
-      <h2>\u53d6\u308a\u8fbc\u307f\u6e08\u307f\u30c7\u30fc\u30bf\u4e00\u89a7\uff08{rows.length} \u4ef6\uff09</h2>
-      {error && <p style={{ color: 'red' }}>{error}</p>}
-      <table border={1} cellPadding={4} style={{ borderCollapse: 'collapse' }}>
+      <h2>取り込み済みデータ一覧（{rows.length} 件）</h2>
+
+      <button onClick={runSheetPuller} disabled={loading}>
+        {loading ? '取り込み中…' : '最新を取り込む'}
+      </button>
+
+      <table border={1} cellPadding={4} style={{ marginTop: 16, borderCollapse: 'collapse' }}>
         <thead>
           <tr>
             <th>整理番号</th><th>送信日付</th><th>進捗</th>
