@@ -59,7 +59,11 @@ export const sheetPuller = functions.https.onRequest(async (_req: any, res: any)
     const values = result.data.values || [];
     const batch = db.batch();
     const fieldMap = getFieldMap();
+
+    console.log('[sheetPuller] first data row', values[1]);
+
     const idIndex = fieldMap.id ?? 0;
+    console.log('[sheetPuller] idIndex', idIndex);
 
     values.slice(1).forEach((row: string[]) => {
 
@@ -71,14 +75,27 @@ export const sheetPuller = functions.https.onRequest(async (_req: any, res: any)
         if (field === 'id') return;
         data[field] = row[idx] || '';
       });
+      console.log('[sheetPuller] preparing write', { id, data });
       batch.set(docRef, data);
     });
 
     await batch.commit();
+    console.log('[sheetPuller] batch committed', { count: values.length - 1 });
 
     res.status(200).json({ pulled: values.length - 1 });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: String(err) });
   }
+});
+
+/**
+ * Debug endpoint — returns the project IDs that the Admin SDK と環境変数が示している値を確認するためのもの。
+ * ブラウザまたは curl で /debug を叩くと JSON で projectId を返す。
+ */
+export const debug = functions.https.onRequest((_req, res) => {
+  res.json({
+    sdkProject: admin.app().options.projectId,
+    envProject: process.env.GCP_PROJECT || process.env.PROJECT_ID,
+  });
 });
