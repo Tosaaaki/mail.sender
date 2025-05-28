@@ -1,4 +1,9 @@
 import assert from 'assert';
+import path from 'path';
+import Module from 'module';
+
+process.env.NODE_PATH = path.resolve('test_stubs');
+Module._initPaths();
 
 // Stub fetch to avoid real network calls
 let captured;

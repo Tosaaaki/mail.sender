@@ -1,4 +1,10 @@
 import assert from 'assert';
+import path from 'path';
+import Module from 'module';
+
+process.env.NODE_PATH = path.resolve('test_stubs');
+Module._initPaths();
+
 process.env.USE_ADMIN_STUB = '1';
 process.env.SMTP_DISABLE = '1';
 import * as admin from './functions/dist/admin-stub.js';
@@ -59,6 +65,7 @@ assert.strictEqual(res3.body, 'Unauthorized');
 const { sheetPuller } = await import('./functions/dist/sheetPuller.js');
 const sheetsStub = await import('./functions/dist/googleapis-stub.js');
 sheetsStub.__setValues([
+  ['header'],
   ['1', 'b1', 'c1', 'd1', 'e1', 'f1', 'g1'],
   ['2', 'b2', 'c2', 'd2', 'e2', 'f2', 'g2']
 ]);
@@ -67,7 +74,7 @@ process.env.SHEET_NAME = 'Sheet1';
 process.env.SHEET_RANGE = 'A:G';
 process.env.GOOGLE_API_KEY = 'dummy';
 process.env.SHEET_FIELD_MAP = JSON.stringify({
-  id: 0,
+  id: 3,
   send_date: 0,
   progress: 1,
   manager_name: 2,
@@ -87,6 +94,7 @@ assert.deepStrictEqual(admin.__getData('mailData/d1'), {
   number: 'd1',
   facility_name: 'e1',
   operator_name: 'f1',
+  hp_url: '',
   email: 'g1'
 });
 assert.deepStrictEqual(admin.__getData('mailData/d2'), {
@@ -96,6 +104,7 @@ assert.deepStrictEqual(admin.__getData('mailData/d2'), {
   number: 'd2',
   facility_name: 'e2',
   operator_name: 'f2',
+  hp_url: '',
   email: 'g2'
 });
 

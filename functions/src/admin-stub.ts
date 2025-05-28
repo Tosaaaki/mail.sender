@@ -33,6 +33,26 @@ export const firestore = () => ({
       },
     };
   },
+  collection(name: string) {
+    return {
+      doc(id: string) {
+        return firestore().doc(`${name}/${id}`);
+      }
+    };
+  },
+  batch() {
+    const ops: { ref: any; data: any }[] = [];
+    return {
+      set(ref: any, data: any) {
+        ops.push({ ref, data });
+      },
+      async commit() {
+        for (const { ref, data } of ops) {
+          await ref.set(data);
+        }
+      }
+    };
+  },
 });
 
 export const FieldValue = {
@@ -44,6 +64,10 @@ export const FieldValue = {
   },
 };
 (firestore as any).FieldValue = FieldValue;
+
+export const credential = {
+  applicationDefault() { return {}; },
+};
 
 export function __setData(data: Record<string, any>) {
   for (const k of Object.keys(data)) {
@@ -60,6 +84,7 @@ export default {
   initializeApp,
   firestore,
   FieldValue,
+  credential,
   __setData,
   __getData,
 };
