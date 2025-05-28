@@ -37,6 +37,8 @@ const SendMail: React.FC = () => {
           setLastSentAt(ts);
         }
         if (typeof data.stageLimit === 'number') setStageLimit(data.stageLimit);
+        if (!subject && typeof data.subject1 === 'string') setSubject(data.subject1);
+        if (!body && typeof data.body1 === 'string') setBody(data.body1);
       }
     })();
     const ref = doc(db, 'counters', 'default');
