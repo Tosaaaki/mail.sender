@@ -38,4 +38,7 @@ export class OAuth2Client {
     }
   }
 
+// nodemailer の型定義が無い場合のスタブ
+declare module 'nodemailer';
+
 declare const process: any;
