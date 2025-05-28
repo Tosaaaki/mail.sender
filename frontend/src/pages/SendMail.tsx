@@ -1,6 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
+import { doc, getDoc, onSnapshot, updateDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
 
 interface State {
   row?: any;
@@ -19,8 +20,45 @@ const SendMail: React.FC = () => {
   const [error, setError] = useState('');
 
   const baseUrl = process.env.REACT_APP_FUNCTIONS_BASE_URL || '';
+  const followupDoc = process.env.REACT_APP_FOLLOWUP_DOC || 'settings/followup';
+  const [intervalDays, setIntervalDays] = useState(0);
+  const [lastSentAt, setLastSentAt] = useState<Date | null>(null);
+  const [stageLimit, setStageLimit] = useState<number | null>(null);
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    (async () => {
+      const snap = await getDoc(doc(db, followupDoc));
+      if (snap.exists()) {
+        const data = snap.data() as any;
+        if (typeof data.intervalDays === 'number') setIntervalDays(data.intervalDays);
+        if (data.lastSentAt) {
+          const ts = (data.lastSentAt as Timestamp).toDate ? (data.lastSentAt as Timestamp).toDate() : new Date(data.lastSentAt);
+          setLastSentAt(ts);
+        }
+        if (typeof data.stageLimit === 'number') setStageLimit(data.stageLimit);
+      }
+    })();
+    const ref = doc(db, 'counters', 'default');
+    const unsub = onSnapshot(ref, snap => {
+      setCount((snap.data() as any)?.count || 0);
+    });
+    return () => unsub();
+  }, []);
+
+  const canSend = () => {
+    if (stageLimit !== null && count >= stageLimit) return false;
+    if (!intervalDays) return true;
+    if (!lastSentAt) return true;
+    const diff = (Date.now() - lastSentAt.getTime()) / 86400000;
+    return diff >= intervalDays;
+  };
 
   const handleSend = async () => {
+    if (!canSend()) {
+      setError('送信間隔が空いていません');
+      return;
+    }
     if (!to.match(/^[^@]+@[^@]+$/)) {
       setError('メールアドレスが不正です');
       return;
@@ -40,6 +78,7 @@ const SendMail: React.FC = () => {
       body: JSON.stringify({ id: row.number, to, subject, text: body }),
     });
     if (resp.ok) {
+      await updateDoc(doc(db, followupDoc), { lastSentAt: serverTimestamp() }, { merge: true });
       alert('送信しました');
       navigate(-1);
     } else {
@@ -73,7 +112,7 @@ const SendMail: React.FC = () => {
           <input type="checkbox" checked={checked} onChange={e => setChecked(e.target.checked)} /> 確認しました
         </label>
       </div>
-      <button onClick={handleSend} disabled={!checked}>送信</button>
+      <button onClick={handleSend} disabled={!checked || !canSend()}>送信</button>
     </div>
   );
 };
