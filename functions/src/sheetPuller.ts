@@ -39,6 +39,22 @@ function getFieldMap(): ColumnMap {
   }
 }
 
+type TemplateMap = Record<string, number>;
+function getTemplateMap(): TemplateMap {
+  const defaultMap: TemplateMap = {
+    subject1: 0,
+    body1: 1,
+  };
+  const env = process.env.TEMPLATE_FIELD_MAP;
+  if (!env) return defaultMap;
+  try {
+    const parsed = JSON.parse(env);
+    return { ...defaultMap, ...parsed };
+  } catch {
+    return defaultMap;
+  }
+}
+
 export const sheetPuller = functions.https.onRequest(async (_req: any, res: any) => {
   const apiKey = process.env.GOOGLE_API_KEY;
   const sheetId = process.env.SHEET_ID;
@@ -83,6 +99,29 @@ export const sheetPuller = functions.https.onRequest(async (_req: any, res: any)
 
     await batch.commit();
     console.log('[sheetPuller] batch committed', { count: values.length - 1 });
+
+    // テンプレート読み込み
+    const tSheetId = process.env.TEMPLATE_SHEET_ID || sheetId;
+    const tSheetName = process.env.TEMPLATE_SHEET_NAME || 'Template';
+    const tSheetRange = process.env.TEMPLATE_SHEET_RANGE || 'A:B';
+    try {
+      const tResult = await sheets.spreadsheets.values.get({
+        spreadsheetId: tSheetId,
+        range: `${tSheetName}!${tSheetRange}`,
+        valueRenderOption: 'UNFORMATTED_VALUE',
+      });
+      const tValues = tResult.data.values || [];
+      const templateRow = tValues[1] || [];
+      const map = getTemplateMap();
+      const tData: Record<string, string> = {};
+      Object.entries(map).forEach(([field, idx]) => {
+        tData[field] = templateRow[idx] || '';
+      });
+      const docRef = db.doc('settings/followup');
+      await docRef.set(tData, { merge: true });
+    } catch (e) {
+      console.warn('[sheetPuller] template fetch failed', e);
+    }
 
     res.status(200).json({ pulled: values.length - 1 });
   } catch (err) {

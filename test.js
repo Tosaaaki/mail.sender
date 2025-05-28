@@ -64,10 +64,15 @@ assert.strictEqual(res3.body, 'Unauthorized');
 // Test sheetPuller with stubbed Sheets data
 const { sheetPuller } = await import('./functions/dist/sheetPuller.js');
 const sheetsStub = await import('./functions/dist/googleapis-stub.js');
-sheetsStub.__setValues([
-  ['header'],
-  ['1', 'b1', 'c1', 'd1', 'e1', 'f1', 'g1'],
-  ['2', 'b2', 'c2', 'd2', 'e2', 'f2', 'g2']
+sheetsStub.__setValuesList([
+  [
+    ['header'],
+    ['1', 'b1', 'c1', 'd1', 'e1', 'f1', 'g1'],
+    ['2', 'b2', 'c2', 'd2', 'e2', 'f2', 'g2']
+  ],
+  [
+    ['s1', 't1']
+  ]
 ]);
 process.env.SHEET_ID = 'dummy';
 process.env.SHEET_NAME = 'Sheet1';
@@ -83,6 +88,10 @@ process.env.SHEET_FIELD_MAP = JSON.stringify({
   operator_name: 5,
   email: 6
 });
+process.env.TEMPLATE_SHEET_ID = 'tmpl';
+process.env.TEMPLATE_SHEET_NAME = 'T';
+process.env.TEMPLATE_SHEET_RANGE = 'A:B';
+process.env.TEMPLATE_FIELD_MAP = JSON.stringify({ subject1: 0, body1: 1 });
 const res4 = { statusCode: 200, body: null, json(d){this.body=d;}, status(c){this.statusCode=c; return this;} };
 await sheetPuller({}, res4);
 assert.strictEqual(res4.statusCode, 200);
@@ -107,5 +116,6 @@ assert.deepStrictEqual(admin.__getData('mailData/d2'), {
   hp_url: '',
   email: 'g2'
 });
+assert.deepStrictEqual(admin.__getData('settings/followup'), { subject1: 's1', body1: 't1' });
 
 console.log('Tests passed');

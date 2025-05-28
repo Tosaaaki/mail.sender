@@ -29,6 +29,7 @@ const DataList: React.FC = () => {
   const [lastSentAt, setLastSentAt] = useState<Date | null>(null);
   const [stageLimit, setStageLimit] = useState<number | null>(null);
   const [count, setCount] = useState(0);
+  const [templates, setTemplates] = useState<Record<string, string>>({});
 
   // Firestore から読み込む
   const fetchRows = async () => {
@@ -86,6 +87,11 @@ const DataList: React.FC = () => {
           setLastSentAt(ts);
         }
         if (typeof data.stageLimit === 'number') setStageLimit(data.stageLimit);
+        const t: Record<string, string> = {};
+        ['subject1','body1','subject2','body2'].forEach(k => {
+          if (typeof data[k] === 'string') t[k] = data[k];
+        });
+        setTemplates(t);
       }
     })();
     const ref = doc(db, 'counters', 'default');
@@ -142,11 +148,11 @@ const DataList: React.FC = () => {
           <h3>コピー支援</h3>
           <div>
             <span>件名: </span>
-            <button onClick={() => navigator.clipboard.writeText('お問い合わせ')}>Copy</button>
+            <button onClick={() => navigator.clipboard.writeText(templates.subject1 || '')}>Copy</button>
           </div>
           <div>
             <span>本文: </span>
-            <button onClick={() => navigator.clipboard.writeText('ご担当者様へ')}>Copy</button>
+            <button onClick={() => navigator.clipboard.writeText(templates.body1 || '')}>Copy</button>
           </div>
           <button onClick={markSent}>送信済み</button>
           <button onClick={() => setAssistRow(null)}>閉じる</button>
