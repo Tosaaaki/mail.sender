@@ -15,8 +15,12 @@ const SendMail: React.FC = () => {
   const row = state.row || {};
 
   const [to, setTo] = useState(row.email || '');
-  const [subject, setSubject] = useState('');
-  const [body, setBody] = useState('');
+  const [subject, setSubject] = useState(
+    process.env.REACT_APP_DEFAULT_SUBJECT || ''
+  );
+  const [body, setBody] = useState(
+    process.env.REACT_APP_DEFAULT_BODY || ''
+  );
   const [checked, setChecked] = useState(false);
   const [error, setError] = useState('');
 

@@ -52,6 +52,8 @@ GCP 上でメール送信を行うサンプルです。Cloud Functions が API �
    SEND_MAIL_URL=sendMail関数のURL
    PROJECT_ID=GCPのプロジェクトID（ローカル用）
    GCP_PROJECT=GCPのプロジェクトID（デプロイ用）
+   DEFAULT_SUBJECT=
+   DEFAULT_BODY=
    ```
 
    ### フロントエンド（React）の環境変数設定例
@@ -61,6 +63,8 @@ GCP 上でメール送信を行うサンプルです。Cloud Functions が API �
    REACT_APP_FIREBASE_AUTH_DOMAIN=Firebaseの認証ドメイン（例: your-project.firebaseapp.com）
    REACT_APP_FIREBASE_PROJECT_ID=FirebaseのプロジェクトID
    REACT_APP_FUNCTIONS_BASE_URL=Cloud FunctionsのベースURL（例: https://asia-northeast1-your-project.cloudfunctions.net）
+   REACT_APP_DEFAULT_SUBJECT=
+   REACT_APP_DEFAULT_BODY=
    ```
 3. 依存パッケージをインストールします。
    ```bash
