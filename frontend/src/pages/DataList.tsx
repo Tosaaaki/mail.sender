@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc, serverTimestamp, increment } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useNavigate } from 'react-router-dom';
 
@@ -12,6 +12,8 @@ type MailRow = {
   operator_name: string;
   hp_url: string;   // NEW ― 公式サイト／問い合わせ URL
   email: string;
+  followupStage?: number;
+  lastSentAt?: any;
 };
 
 const DataList: React.FC = () => {
@@ -42,7 +44,8 @@ const DataList: React.FC = () => {
     if (!assistRow) return;
     await updateDoc(doc(db, 'mailData', assistRow.number), {
       progress: '送信済み',
-      sent_at: serverTimestamp(),
+      followupStage: increment(1),
+      lastSentAt: serverTimestamp(),
     });
     setAssistRow(null);
     fetchRows();

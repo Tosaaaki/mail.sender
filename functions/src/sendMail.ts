@@ -66,7 +66,8 @@ export const sendMail = functions.https.onRequest(async (req: any, res: any) => 
     const mailRef = admin.firestore().doc(`mailData/${id}`);
     await mailRef.set({
       progress: '送信済み',
-      sent_at: admin.firestore.FieldValue.serverTimestamp(),
+      followupStage: admin.firestore.FieldValue.increment(1),
+      lastSentAt: admin.firestore.FieldValue.serverTimestamp(),
     }, { merge: true });
   } catch (err) {
     console.error(err);

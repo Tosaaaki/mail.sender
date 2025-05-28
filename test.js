@@ -31,7 +31,10 @@ const res2 = {
 await sendMail(req2, res2);
 assert.deepStrictEqual(res2.body, { sent: true });
 assert.strictEqual(res2.statusCode, 200);
-assert.strictEqual(admin.__getData('mailData/x1').progress, '送信済み');
+const mailData = admin.__getData('mailData/x1');
+assert.strictEqual(mailData.progress, '送信済み');
+assert.strictEqual(mailData.followupStage, 1);
+assert.ok(mailData.lastSentAt instanceof Date);
 
 // Verify counter incremented
 const resCount = { statusCode: 200, body: null, json(d){this.body=d;}, status(c){this.statusCode=c;return this;} };
