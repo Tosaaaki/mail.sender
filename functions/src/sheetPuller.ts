@@ -7,10 +7,15 @@ dotenv.config();
 // admin.initializeApp(); ← 削除します
 
 let google: any;
-try {
-  ({ google } = await import('googleapis'));
-} catch {
-  ({ google } = await import('./googleapis-stub.js'));
+async function loadGoogle() {
+  if (!google) {
+    try {
+      ({ google } = await import('googleapis'));
+    } catch {
+      ({ google } = await import('./googleapis-stub.js'));
+    }
+  }
+  return google;
 }
 
 const db = admin.firestore();
@@ -67,7 +72,8 @@ export const sheetPuller = functions.https.onRequest(async (_req: any, res: any)
   }
 
   try {
-    const sheets = google.sheets({ version: 'v4', auth: apiKey });
+    const g = await loadGoogle();
+    const sheets = g.sheets({ version: 'v4', auth: apiKey });
     const result = await sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
       range: `${sheetName}!${sheetRange}`,

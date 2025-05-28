@@ -1,18 +1,11 @@
-let firebaseAdmin: any;
-if (process.env.USE_ADMIN_STUB) {
-  firebaseAdmin = await import('./admin-stub.js');
-} else {
-  try {
-    firebaseAdmin = await import('firebase-admin');
-  } catch {
-    firebaseAdmin = await import('./admin-stub.js');
-  }
-}
-
+import * as firebaseAdmin from 'firebase-admin';
+import adminStub from './admin-stub.js';
 import dotenv from 'dotenv';
+
 dotenv.config();
 
-const admin = firebaseAdmin.default ?? firebaseAdmin;
+const adminModule: any = process.env.USE_ADMIN_STUB ? adminStub : firebaseAdmin;
+const admin = (adminModule as any).default ?? adminModule;
 
 const projectId =
   process.env.GCP_PROJECT ||
