@@ -23,6 +23,12 @@ const DataList: React.FC = () => {
   const pullerUrl = process.env.REACT_APP_SHEET_PULLER_URL!;
   const navigate = useNavigate();
 
+  const followupDoc = process.env.REACT_APP_FOLLOWUP_DOC || 'settings/followup';
+  const [intervalDays, setIntervalDays] = useState(0);
+  const [lastSentAt, setLastSentAt] = useState<Date | null>(null);
+  const [stageLimit, setStageLimit] = useState<number | null>(null);
+  const [count, setCount] = useState(0);
+
   // Firestore から読み込む
   const fetchRows = async () => {
     const snap = await getDocs(collection(db, 'mailData'));
@@ -51,6 +57,14 @@ const DataList: React.FC = () => {
     fetchRows();
   };
 
+  const canSend = () => {
+    if (stageLimit !== null && count >= stageLimit) return false;
+    if (!intervalDays) return true;
+    if (!lastSentAt) return true;
+    const diff = (Date.now() - lastSentAt.getTime()) / 86400000;
+    return diff >= intervalDays;
+  };
+
   // sheetPuller → Firestore → 画面更新
   const runSheetPuller = async () => {
     setLoading(true);
@@ -59,7 +73,26 @@ const DataList: React.FC = () => {
     setLoading(false);
   };
 
-  useEffect(() => { fetchRows(); }, []);
+  useEffect(() => {
+    fetchRows();
+    (async () => {
+      const snap = await getDoc(doc(db, followupDoc));
+      if (snap.exists()) {
+        const data = snap.data() as any;
+        if (typeof data.intervalDays === 'number') setIntervalDays(data.intervalDays);
+        if (data.lastSentAt) {
+          const ts = (data.lastSentAt as Timestamp).toDate ? (data.lastSentAt as Timestamp).toDate() : new Date(data.lastSentAt);
+          setLastSentAt(ts);
+        }
+        if (typeof data.stageLimit === 'number') setStageLimit(data.stageLimit);
+      }
+    })();
+    const ref = doc(db, 'counters', 'default');
+    const unsub = onSnapshot(ref, snap => {
+      setCount((snap.data() as any)?.count || 0);
+    });
+    return () => unsub();
+  }, []);
 
   return (
     <div style={{ padding: 24 }}>
@@ -92,7 +125,9 @@ const DataList: React.FC = () => {
               <td>{r.email}</td>
               <td>
                 {r.email ? (
-                  <button onClick={() => handleSend(r)}>メール送信</button>
+                  <button onClick={() => handleSend(r)} disabled={!canSend()}>
+                    メール送信
+                  </button>
                 ) : r.hp_url ? (
                   <button onClick={() => handleForm(r)}>フォーム</button>
                 ) : null}
