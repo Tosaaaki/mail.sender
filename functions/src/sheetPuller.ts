@@ -19,14 +19,15 @@ type ColumnMap = Record<string, number>;
 
 function getFieldMap(): ColumnMap {
   const defaultMap: ColumnMap = {
-    id: 0,
-    send_date: 0,
-    progress: 1,
-    manager_name: 2,
-    number: 3,
-    facility_name: 4,
-    operator_name: 5,
-    email: 6,
+    id: 3,             // 整理番号 (D 列)
+    send_date: 0,      // A 列
+    progress: 1,       // B 列
+    manager_name: 2,   // C 列
+    number: 3,         // D 列 (重複でも可)
+    facility_name: 4,  // E 列
+    operator_name: 5,  // F 列
+    hp_url: 11,        // L 列 (e‑Mail / URL)
+    email: 12,         // M 列 (HP URL または e‑mail 列)
   };
   const env = process.env.SHEET_FIELD_MAP;
   if (!env) return defaultMap;
@@ -42,7 +43,7 @@ export const sheetPuller = functions.https.onRequest(async (_req: any, res: any)
   const apiKey = process.env.GOOGLE_API_KEY;
   const sheetId = process.env.SHEET_ID;
   const sheetName = process.env.SHEET_NAME || '一覧・操作';
-  const sheetRange = process.env.SHEET_RANGE || 'A:G';
+  const sheetRange = process.env.SHEET_RANGE || 'A:M';
 
   if (!apiKey || !sheetId) {
     res.status(500).send('Missing environment configuration');
@@ -54,6 +55,7 @@ export const sheetPuller = functions.https.onRequest(async (_req: any, res: any)
     const result = await sheets.spreadsheets.values.get({
       spreadsheetId: sheetId,
       range: `${sheetName}!${sheetRange}`,
+      valueRenderOption: 'UNFORMATTED_VALUE',
     });
 
     const values = result.data.values || [];

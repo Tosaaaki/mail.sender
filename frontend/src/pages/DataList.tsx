@@ -3,8 +3,14 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 
 type MailRow = {
-  send_date: string; progress: string; manager_name: string;
-  number: string; facility_name: string; operator_name: string; email: string;
+  send_date: string;
+  progress: string;
+  manager_name: string;
+  number: string;
+  facility_name: string;
+  operator_name: string;
+  hp_url: string;   // NEW ― 公式サイト／問い合わせ URL
+  email: string;
 };
 
 const DataList: React.FC = () => {
@@ -40,7 +46,7 @@ const DataList: React.FC = () => {
         <thead>
           <tr>
             <th>整理番号</th><th>送信日付</th><th>進捗</th>
-            <th>施設責任者</th><th>事業所名</th><th>運営法人</th><th>Email</th>
+            <th>施設責任者</th><th>事業所名</th><th>運営法人</th><th>HP / URL</th><th>Email</th>
           </tr>
         </thead>
         <tbody>
@@ -48,7 +54,15 @@ const DataList: React.FC = () => {
             <tr key={r.number}>
               <td>{r.number}</td><td>{r.send_date}</td><td>{r.progress}</td>
               <td>{r.manager_name}</td><td>{r.facility_name}</td>
-              <td>{r.operator_name}</td><td>{r.email}</td>
+              <td>{r.operator_name}</td>
+              <td>
+                {r.hp_url ? (
+                  <a href={r.hp_url} target="_blank" rel="noopener noreferrer">
+                    {r.hp_url}
+                  </a>
+                ) : '—'}
+              </td>
+              <td>{r.email}</td>
             </tr>
           ))}
         </tbody>
