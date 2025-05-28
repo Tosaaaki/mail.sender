@@ -1,5 +1,6 @@
 import * as functions from 'firebase-functions';
 import { OAuth2Client } from 'google-auth-library';
+import nodemailer from 'nodemailer';
 import admin from './admin.js';
 
 const client = new OAuth2Client();
@@ -26,12 +27,47 @@ export const sendMail = functions.https.onRequest(async (req: any, res: any) => 
     return;
   }
 
-  const senderId = req.body?.senderId || 'default';
+  const { id, to, subject, text } = req.body || {};
+  if (!to || !subject || !text || !id) {
+    res.status(400).json({ error: 'missing parameters' });
+    return;
+  }
 
-  // 本来はここでメール送信処理を行う
+  const transportOpts = {
+    host: process.env.SMTP_HOST,
+    port: Number(process.env.SMTP_PORT || '465'),
+    secure: process.env.SMTP_SECURE !== 'false',
+    auth: {
+      user: process.env.SMTP_USER,
+      pass: process.env.SMTP_PASS,
+    },
+  } as any;
+
+  if (!process.env.SMTP_DISABLE) {
+    try {
+      const transporter = nodemailer.createTransport(transportOpts);
+      await transporter.sendMail({
+        from: process.env.SMTP_FROM,
+        to,
+        subject,
+        text,
+      });
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ error: 'failed to send mail' });
+      return;
+    }
+  }
+
   try {
-    const ref = admin.firestore().doc(`counters/${senderId}`);
-    await ref.set({ count: admin.firestore.FieldValue.increment(1) }, { merge: true });
+    const counterRef = admin.firestore().doc(`counters/${req.body.senderId || 'default'}`);
+    await counterRef.set({ count: admin.firestore.FieldValue.increment(1) }, { merge: true });
+
+    const mailRef = admin.firestore().doc(`mailData/${id}`);
+    await mailRef.set({
+      progress: '送信済み',
+      sent_at: admin.firestore.FieldValue.serverTimestamp(),
+    }, { merge: true });
   } catch (err) {
     console.error(err);
   }
