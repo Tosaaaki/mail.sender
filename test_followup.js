@@ -11,6 +11,8 @@ process.env.TASKS_SERVICE_ACCOUNT = 'svc@example.com';
 
 import * as admin from './functions/dist/admin-stub.js';
 const { sendMail } = await import('./functions/dist/sendMail.js');
+const { sheetPuller } = await import('./functions/dist/sheetPuller.js');
+const sheetsStub = await import('./functions/dist/googleapis-stub.js');
 
 let called = false;
 async function mockSendMail(req, res) {
@@ -39,6 +41,29 @@ async function maybeSend(row, intervalDays) {
 }
 
 admin.__setData({});
+
+// template fetch via sheetPuller
+sheetsStub.__setValuesList([
+  [
+    ['h'],
+    ['1','b','c','d','e','f','g']
+  ],
+  [
+    ['sub','bod']
+  ]
+]);
+process.env.SHEET_ID = 'd';
+process.env.SHEET_NAME = 'S';
+process.env.SHEET_RANGE = 'A:G';
+process.env.GOOGLE_API_KEY = 'dummy';
+process.env.SHEET_FIELD_MAP = JSON.stringify({id:3,send_date:0,progress:1,manager_name:2,number:3,facility_name:4,operator_name:5,email:6});
+process.env.TEMPLATE_SHEET_ID = 'd';
+process.env.TEMPLATE_SHEET_NAME = 'S';
+process.env.TEMPLATE_SHEET_RANGE = 'A:B';
+process.env.TEMPLATE_FIELD_MAP = JSON.stringify({subject1:0, body1:1});
+const resp = {statusCode:0, body:null, json(d){this.body=d;}, status(c){this.statusCode=c; return this;}};
+await sheetPuller({}, resp);
+assert.strictEqual(admin.__getData('settings/followup').subject1, 'sub');
 
 const row = { number: 'r1', email: 'a@example.com' };
 await maybeSend(row, 3);

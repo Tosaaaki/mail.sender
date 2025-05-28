@@ -1,6 +1,9 @@
-let values: string[][] = [];
+let queue: string[][][] = [];
 export function __setValues(v: string[][]) {
-  values = v;
+  queue = [v];
+}
+export function __setValuesList(v: string[][][]) {
+  queue = v.slice();
 }
 export const google = {
   sheets() {
@@ -8,7 +11,8 @@ export const google = {
       spreadsheets: {
         values: {
           async get() {
-            return { data: { values } };
+            const v = queue.length ? queue.shift() : [];
+            return { data: { values: v } };
           }
         }
       }

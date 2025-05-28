@@ -40,6 +40,10 @@ GCP 上でメール送信を行うサンプルです。Cloud Functions が API �
    SHEET_NAME=対象シート名（例: 一覧・操作）
    SHEET_RANGE=取得する範囲（例: A:G）
    SHEET_FIELD_MAP={"id":0,"send_date":0,"progress":1,"manager_name":2,"number":3,"facility_name":4,"operator_name":5,"email":6}
+   TEMPLATE_SHEET_ID=テンプレート用スプレッドシートのID
+   TEMPLATE_SHEET_NAME=テンプレートシート名
+   TEMPLATE_SHEET_RANGE=テンプレート取得範囲（例: A:B）
+   TEMPLATE_FIELD_MAP={"subject1":0,"body1":1}
    FIREBASE_API_KEY=FirebaseのAPIキー
    TASKS_AUDIENCE=Cloud Tasksの認証先URL（sendMail関数のURL）
    TASKS_SERVICE_ACCOUNT=Cloud Tasksが使用するサービスアカウント
