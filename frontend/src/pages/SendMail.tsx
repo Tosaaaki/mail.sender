@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
-import { doc, getDoc, onSnapshot, updateDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
+import { doc, getDoc, onSnapshot, setDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
 
 interface State {
   row?: any;
@@ -78,7 +78,7 @@ const SendMail: React.FC = () => {
       body: JSON.stringify({ id: row.number, to, subject, text: body }),
     });
     if (resp.ok) {
-      await updateDoc(doc(db, followupDoc), { lastSentAt: serverTimestamp() }, { merge: true });
+      await setDoc(doc(db, followupDoc), { lastSentAt: serverTimestamp() }, { merge: true });
       alert('送信しました');
       navigate(-1);
     } else {
