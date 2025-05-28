@@ -1,12 +1,13 @@
 import assert from 'assert';
 process.env.USE_ADMIN_STUB = '1';
+process.env.SMTP_DISABLE = '1';
 import * as admin from './functions/dist/admin-stub.js';
 
 const { getCount } = await import('./functions/dist/getCount.js');
 const { sendMail } = await import('./functions/dist/sendMail.js');
 
 // Test getCount
-admin.__setData({ 'counters/default': { count: 3 } });
+admin.__setData({ 'counters/default': { count: 3 }, 'mailData/x1': { number: 'x1', progress: '未送信' } });
 const res1 = {
   statusCode: 200,
   body: null,
@@ -19,7 +20,7 @@ assert.strictEqual(res1.statusCode, 200);
 
 // Test sendMail success
 process.env.TASKS_SERVICE_ACCOUNT = 'svc@example.com';
-const req2 = { get: () => 'Bearer valid' };
+const req2 = { get: () => 'Bearer valid', body: { id: 'x1', to: 'a@example.com', subject: 'hi', text: 'body', senderId: 'default' } };
 const res2 = {
   statusCode: 200,
   body: null,
@@ -30,6 +31,7 @@ const res2 = {
 await sendMail(req2, res2);
 assert.deepStrictEqual(res2.body, { sent: true });
 assert.strictEqual(res2.statusCode, 200);
+assert.strictEqual(admin.__getData('mailData/x1').progress, '送信済み');
 
 // Verify counter incremented
 const resCount = { statusCode: 200, body: null, json(d){this.body=d;}, status(c){this.statusCode=c;return this;} };

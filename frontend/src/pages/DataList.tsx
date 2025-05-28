@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { collection, getDocs } from 'firebase/firestore';
+import { collection, getDocs, doc, updateDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../firebase';
+import { useNavigate } from 'react-router-dom';
 
 type MailRow = {
   send_date: string;
@@ -16,12 +17,35 @@ type MailRow = {
 const DataList: React.FC = () => {
   const [rows, setRows] = useState<MailRow[]>([]);
   const [loading, setLoading] = useState(false);
+  const [assistRow, setAssistRow] = useState<MailRow | null>(null);
   const pullerUrl = process.env.REACT_APP_SHEET_PULLER_URL!;
+  const navigate = useNavigate();
 
   // Firestore から読み込む
   const fetchRows = async () => {
     const snap = await getDocs(collection(db, 'mailData'));
     setRows(snap.docs.map(d => d.data() as MailRow));
+  };
+
+  const handleSend = (row: MailRow) => {
+    navigate('/send', { state: { row } });
+  };
+
+  const handleForm = async (row: MailRow) => {
+    if (row.hp_url) {
+      window.open(row.hp_url, '_blank');
+      setAssistRow(row);
+    }
+  };
+
+  const markSent = async () => {
+    if (!assistRow) return;
+    await updateDoc(doc(db, 'mailData', assistRow.number), {
+      progress: '送信済み',
+      sent_at: serverTimestamp(),
+    });
+    setAssistRow(null);
+    fetchRows();
   };
 
   // sheetPuller → Firestore → 画面更新
@@ -46,7 +70,7 @@ const DataList: React.FC = () => {
         <thead>
           <tr>
             <th>整理番号</th><th>送信日付</th><th>進捗</th>
-            <th>施設責任者</th><th>事業所名</th><th>運営法人</th><th>HP / URL</th><th>Email</th>
+            <th>施設責任者</th><th>事業所名</th><th>運営法人</th><th>HP / URL</th><th>Email</th><th>操作</th>
           </tr>
         </thead>
         <tbody>
@@ -63,10 +87,32 @@ const DataList: React.FC = () => {
                 ) : '—'}
               </td>
               <td>{r.email}</td>
+              <td>
+                {r.email ? (
+                  <button onClick={() => handleSend(r)}>メール送信</button>
+                ) : r.hp_url ? (
+                  <button onClick={() => handleForm(r)}>フォーム</button>
+                ) : null}
+              </td>
             </tr>
           ))}
         </tbody>
       </table>
+      {assistRow && (
+        <div style={{ position: 'fixed', bottom: 0, right: 0, background: '#fff', border: '1px solid #ccc', padding: 16 }}>
+          <h3>コピー支援</h3>
+          <div>
+            <span>件名: </span>
+            <button onClick={() => navigator.clipboard.writeText('お問い合わせ')}>Copy</button>
+          </div>
+          <div>
+            <span>本文: </span>
+            <button onClick={() => navigator.clipboard.writeText('ご担当者様へ')}>Copy</button>
+          </div>
+          <button onClick={markSent}>送信済み</button>
+          <button onClick={() => setAssistRow(null)}>閉じる</button>
+        </div>
+      )}
     </div>
   );
 };
