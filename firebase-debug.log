@@ -1,0 +1,118 @@
+[debug] [2025-05-28T22:42:31.440Z] ----------------------------------------------------------------------
+[debug] [2025-05-28T22:42:31.442Z] Command:       /opt/homebrew/Cellar/node@20/20.19.0_1/bin/node /usr/local/bin/firebase deploy --only functions:assignUserId --project mail-sender-1aafa --token 
+[debug] [2025-05-28T22:42:31.442Z] CLI Version:   14.2.0
+[debug] [2025-05-28T22:42:31.442Z] Platform:      darwin
+[debug] [2025-05-28T22:42:31.442Z] Node Version:  v20.19.0
+[debug] [2025-05-28T22:42:31.443Z] Time:          Thu May 29 2025 07:42:31 GMT+0900 (Japan Standard Time)
+[debug] [2025-05-28T22:42:31.443Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2025-05-28T22:42:31.542Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2025-05-28T22:42:31.542Z] > authorizing via signed-in user (awana.create@gmail.com)
+[debug] [2025-05-28T22:42:31.542Z] [iam] checking project mail-sender-1aafa for permissions ["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]
+[debug] [2025-05-28T22:42:31.543Z] Checked if tokens are valid: true, expires at: 1748474704475
+[debug] [2025-05-28T22:42:31.543Z] Checked if tokens are valid: true, expires at: 1748474704475
+[debug] [2025-05-28T22:42:31.543Z] >>> [apiv2][query] POST https://cloudresourcemanager.googleapis.com/v1/projects/mail-sender-1aafa:testIamPermissions [none]
+[debug] [2025-05-28T22:42:31.543Z] >>> [apiv2][(partial)header] POST https://cloudresourcemanager.googleapis.com/v1/projects/mail-sender-1aafa:testIamPermissions x-goog-quota-user=projects/mail-sender-1aafa
+[debug] [2025-05-28T22:42:31.544Z] >>> [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/mail-sender-1aafa:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2025-05-28T22:42:32.224Z] <<< [apiv2][status] POST https://cloudresourcemanager.googleapis.com/v1/projects/mail-sender-1aafa:testIamPermissions 200
+[debug] [2025-05-28T22:42:32.225Z] <<< [apiv2][body] POST https://cloudresourcemanager.googleapis.com/v1/projects/mail-sender-1aafa:testIamPermissions {"permissions":["cloudfunctions.functions.create","cloudfunctions.functions.delete","cloudfunctions.functions.get","cloudfunctions.functions.list","cloudfunctions.functions.update","cloudfunctions.operations.get","firebase.projects.get"]}
+[debug] [2025-05-28T22:42:32.225Z] Checked if tokens are valid: true, expires at: 1748474704475
+[debug] [2025-05-28T22:42:32.225Z] Checked if tokens are valid: true, expires at: 1748474704475
+[debug] [2025-05-28T22:42:32.225Z] >>> [apiv2][query] POST https://iam.googleapis.com/v1/projects/mail-sender-1aafa/serviceAccounts/mail-sender-1aafa@appspot.gserviceaccount.com:testIamPermissions [none]
+[debug] [2025-05-28T22:42:32.225Z] >>> [apiv2][body] POST https://iam.googleapis.com/v1/projects/mail-sender-1aafa/serviceAccounts/mail-sender-1aafa@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[debug] [2025-05-28T22:42:33.187Z] <<< [apiv2][status] POST https://iam.googleapis.com/v1/projects/mail-sender-1aafa/serviceAccounts/mail-sender-1aafa@appspot.gserviceaccount.com:testIamPermissions 200
+[debug] [2025-05-28T22:42:33.187Z] <<< [apiv2][body] POST https://iam.googleapis.com/v1/projects/mail-sender-1aafa/serviceAccounts/mail-sender-1aafa@appspot.gserviceaccount.com:testIamPermissions {"permissions":["iam.serviceAccounts.actAs"]}
+[info] 
+[info] === Deploying to 'mail-sender-1aafa'...
+[info] 
+[info] i  deploying functions 
+[debug] [2025-05-28T22:42:33.190Z] Checked if tokens are valid: true, expires at: 1748474704475
+[debug] [2025-05-28T22:42:33.190Z] Checked if tokens are valid: true, expires at: 1748474704475
+[debug] [2025-05-28T22:42:33.191Z] >>> [apiv2][query] GET https://cloudresourcemanager.googleapis.com/v1/projects/mail-sender-1aafa [none]
+[debug] [2025-05-28T22:42:33.370Z] <<< [apiv2][status] GET https://cloudresourcemanager.googleapis.com/v1/projects/mail-sender-1aafa 200
+[debug] [2025-05-28T22:42:33.370Z] <<< [apiv2][body] GET https://cloudresourcemanager.googleapis.com/v1/projects/mail-sender-1aafa {"projectNumber":"543631732065","projectId":"mail-sender-1aafa","lifecycleState":"ACTIVE","name":"Mail-Sender","labels":{"firebase":"enabled","firebase-core":"disabled"},"createTime":"2025-05-23T06:16:44.786310Z"}
+[info] i  functions: preparing codebase default for deployment 
+[info] i  functions: ensuring required API cloudfunctions.googleapis.com is enabled... 
+[debug] [2025-05-28T22:42:33.371Z] Checked if tokens are valid: true, expires at: 1748474704475
+[debug] [2025-05-28T22:42:33.371Z] Checked if tokens are valid: true, expires at: 1748474704475
+[debug] [2025-05-28T22:42:33.371Z] Checked if tokens are valid: true, expires at: 1748474704475
+[debug] [2025-05-28T22:42:33.371Z] Checked if tokens are valid: true, expires at: 1748474704475
+[info] i  functions: ensuring required API cloudbuild.googleapis.com is enabled... 
+[debug] [2025-05-28T22:42:33.371Z] Checked if tokens are valid: true, expires at: 1748474704475
+[debug] [2025-05-28T22:42:33.371Z] Checked if tokens are valid: true, expires at: 1748474704475
+[info] i  artifactregistry: ensuring required API artifactregistry.googleapis.com is enabled... 
+[debug] [2025-05-28T22:42:33.372Z] Checked if tokens are valid: true, expires at: 1748474704475
+[debug] [2025-05-28T22:42:33.372Z] Checked if tokens are valid: true, expires at: 1748474704475
+[debug] [2025-05-28T22:42:33.372Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/mail-sender-1aafa/services/cloudfunctions.googleapis.com [none]
+[debug] [2025-05-28T22:42:33.372Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/mail-sender-1aafa/services/cloudfunctions.googleapis.com x-goog-quota-user=projects/mail-sender-1aafa
+[debug] [2025-05-28T22:42:33.374Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/mail-sender-1aafa/services/runtimeconfig.googleapis.com [none]
+[debug] [2025-05-28T22:42:33.374Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/mail-sender-1aafa/services/runtimeconfig.googleapis.com x-goog-quota-user=projects/mail-sender-1aafa
+[debug] [2025-05-28T22:42:33.375Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/mail-sender-1aafa/services/cloudbuild.googleapis.com [none]
+[debug] [2025-05-28T22:42:33.375Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/mail-sender-1aafa/services/cloudbuild.googleapis.com x-goog-quota-user=projects/mail-sender-1aafa
+[debug] [2025-05-28T22:42:33.376Z] >>> [apiv2][query] GET https://serviceusage.googleapis.com/v1/projects/mail-sender-1aafa/services/artifactregistry.googleapis.com [none]
+[debug] [2025-05-28T22:42:33.376Z] >>> [apiv2][(partial)header] GET https://serviceusage.googleapis.com/v1/projects/mail-sender-1aafa/services/artifactregistry.googleapis.com x-goog-quota-user=projects/mail-sender-1aafa
+[debug] [2025-05-28T22:42:34.428Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/mail-sender-1aafa/services/runtimeconfig.googleapis.com 200
+[debug] [2025-05-28T22:42:34.428Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/mail-sender-1aafa/services/runtimeconfig.googleapis.com [omitted]
+[debug] [2025-05-28T22:42:34.429Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/mail-sender-1aafa/services/cloudfunctions.googleapis.com 200
+[debug] [2025-05-28T22:42:34.429Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/mail-sender-1aafa/services/cloudfunctions.googleapis.com [omitted]
+[info] ✔  functions: required API cloudfunctions.googleapis.com is enabled 
+[debug] [2025-05-28T22:42:34.430Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/mail-sender-1aafa/services/cloudbuild.googleapis.com 200
+[debug] [2025-05-28T22:42:34.430Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/mail-sender-1aafa/services/cloudbuild.googleapis.com [omitted]
+[info] ✔  functions: required API cloudbuild.googleapis.com is enabled 
+[debug] [2025-05-28T22:42:34.431Z] <<< [apiv2][status] GET https://serviceusage.googleapis.com/v1/projects/mail-sender-1aafa/services/artifactregistry.googleapis.com 200
+[debug] [2025-05-28T22:42:34.431Z] <<< [apiv2][body] GET https://serviceusage.googleapis.com/v1/projects/mail-sender-1aafa/services/artifactregistry.googleapis.com [omitted]
+[info] ✔  artifactregistry: required API artifactregistry.googleapis.com is enabled 
+[debug] [2025-05-28T22:42:34.432Z] Checked if tokens are valid: true, expires at: 1748474704475
+[debug] [2025-05-28T22:42:34.432Z] Checked if tokens are valid: true, expires at: 1748474704475
+[debug] [2025-05-28T22:42:34.432Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/mail-sender-1aafa/adminSdkConfig [none]
+[debug] [2025-05-28T22:42:34.768Z] <<< [apiv2][status] GET https://firebase.googleapis.com/v1beta1/projects/mail-sender-1aafa/adminSdkConfig 200
+[debug] [2025-05-28T22:42:34.768Z] <<< [apiv2][body] GET https://firebase.googleapis.com/v1beta1/projects/mail-sender-1aafa/adminSdkConfig {"projectId":"mail-sender-1aafa","storageBucket":"mail-sender-1aafa.firebasestorage.app"}
+[debug] [2025-05-28T22:42:34.768Z] Checked if tokens are valid: true, expires at: 1748474704475
+[debug] [2025-05-28T22:42:34.768Z] Checked if tokens are valid: true, expires at: 1748474704475
+[debug] [2025-05-28T22:42:34.768Z] >>> [apiv2][query] GET https://runtimeconfig.googleapis.com/v1beta1/projects/mail-sender-1aafa/configs [none]
+[debug] [2025-05-28T22:42:35.233Z] <<< [apiv2][status] GET https://runtimeconfig.googleapis.com/v1beta1/projects/mail-sender-1aafa/configs 200
+[debug] [2025-05-28T22:42:35.233Z] <<< [apiv2][body] GET https://runtimeconfig.googleapis.com/v1beta1/projects/mail-sender-1aafa/configs {}
+[debug] [2025-05-28T22:42:35.234Z] Validating nodejs source
+[warn] ⚠  functions: package.json indicates an outdated version of firebase-functions. Please upgrade using npm install --save firebase-functions@latest in your functions directory. 
+[warn] ⚠  functions: Please note that there will be breaking changes when you upgrade. 
+[debug] [2025-05-28T22:42:35.570Z] > [functions] package.json contents: {
+  "name": "functions",
+  "version": "1.0.0",
+  "description": "Cloud Functions for mail sender",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc -p tsconfig.json",
+    "test": "npm run build",
+    "deploy": "npm run build",
+    "start": "functions-framework --source=dist/index.js --target=sheetPuller --signature-type=http"
+  },
+  "license": "MIT",
+  "dependencies": {
+    "@google-cloud/functions-framework": "^4.0.0",
+    "@google-cloud/tasks": "^6.1.0",
+    "dotenv": "^16.5.0",
+    "firebase-admin": "^12.7.0",
+    "firebase-functions": "^4.4.1",
+    "googleapis": "^130.0.0",
+    "nodemailer": "^6.10.1"
+  },
+  "devDependencies": {
+    "@types/dotenv": "^6.1.1",
+    "@types/node": "*",
+    "@types/nodemailer": "^6.4.17",
+    "typescript": "^5.5.0"
+  }
+}
+[debug] [2025-05-28T22:42:35.570Z] Building nodejs source
+[info] i  functions: Loading and analyzing source code for codebase default to determine what to deploy 
+[info] i  functions: You are using a version of firebase-functions SDK (4.9.0) that does not have support for the newest Firebase Extensions features. Please update firebase-functions SDK to >=5.1.0 to use them correctly 
+[debug] [2025-05-28T22:42:35.570Z] Could not find functions.yaml. Must use http discovery
+[debug] [2025-05-28T22:42:35.576Z] Found firebase-functions binary at '/Users/tossaki/mail.sender/functions/node_modules/.bin/firebase-functions'
+[info] Serving at port 8247
+
+[debug] [2025-05-28T22:42:35.865Z] Got response from /__/functions.yaml {"endpoints":{"assignUserId":{"platform":"gcfv1","availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"serviceAccountEmail":null,"vpc":null,"eventTrigger":{"eventType":"providers/firebase.auth/eventTypes/user.create","eventFilters":{"resource":"projects/mail-sender-1aafa"},"retry":false},"labels":{},"entryPoint":"assignUserId"},"sheetPuller":{"platform":"gcfv1","availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"serviceAccountEmail":null,"vpc":null,"httpsTrigger":{},"entryPoint":"sheetPuller"},"sendMail":{"platform":"gcfv1","availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"serviceAccountEmail":null,"vpc":null,"httpsTrigger":{},"entryPoint":"sendMail"},"login":{"platform":"gcfv1","availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"serviceAccountEmail":null,"vpc":null,"httpsTrigger":{},"entryPoint":"login"},"getCount":{"platform":"gcfv1","availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"serviceAccountEmail":null,"vpc":null,"httpsTrigger":{},"entryPoint":"getCount"},"debug":{"platform":"gcfv1","availableMemoryMb":null,"timeoutSeconds":null,"minInstances":null,"maxInstances":null,"ingressSettings":null,"serviceAccountEmail":null,"vpc":null,"httpsTrigger":{},"entryPoint":"debug"}},"specVersion":"v1alpha1","requiredAPIs":[]}
+[debug] [2025-05-28T22:42:39.880Z] Failed to validate key FIREBASE_API_KEY: Error: Key FIREBASE_API_KEY starts with a reserved prefix (X_GOOGLE_ FIREBASE_ EXT_)
+[debug] [2025-05-28T22:42:39.880Z] Failed to validate key GCP_PROJECT: Error: Key GCP_PROJECT is reserved for internal use.
+[error] Error: Failed to load environment variables from .env.:
+[error] - Error Key FIREBASE_API_KEY starts with a reserved prefix (X_GOOGLE_ FIREBASE_ EXT_)
+[error] - Error Key GCP_PROJECT is reserved for internal use.

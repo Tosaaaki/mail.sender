@@ -1,6 +1,5 @@
 {
   "name": "functions",
-  "type": "module",
   "version": "1.0.0",
   "description": "Cloud Functions for mail sender",
   "main": "dist/index.js",
