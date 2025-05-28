@@ -23,6 +23,7 @@
   "devDependencies": {
     "@types/dotenv": "^6.1.1",
     "@types/node": "*",
+    "@types/nodemailer": "^6.4.17",
     "typescript": "^5.5.0"
   }
 }
