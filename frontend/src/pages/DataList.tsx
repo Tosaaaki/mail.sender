@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { getDoc, onSnapshot, Timestamp } from 'firebase/firestore';
 import { collection, getDocs, doc, updateDoc, serverTimestamp, increment } from 'firebase/firestore';
 import { db } from '../firebase';
 import { useNavigate } from 'react-router-dom';
+import { useFollowupSettings } from '../hooks/useFollowupSettings';
 
 type MailRow = {
   send_date: string;
@@ -25,11 +25,8 @@ const DataList: React.FC = () => {
   const navigate = useNavigate();
 
   const followupDoc = process.env.REACT_APP_FOLLOWUP_DOC || 'settings/followup';
-  const [intervalDays, setIntervalDays] = useState(0);
-  const [lastSentAt, setLastSentAt] = useState<Date | null>(null);
-  const [stageLimit, setStageLimit] = useState<number | null>(null);
-  const [count, setCount] = useState(0);
-  const [templates, setTemplates] = useState<Record<string, string>>({});
+  const { intervalDays, lastSentAt, stageLimit, templates, count } =
+    useFollowupSettings(followupDoc);
 
   // Firestore から読み込む
   const fetchRows = async () => {
@@ -77,28 +74,6 @@ const DataList: React.FC = () => {
 
   useEffect(() => {
     fetchRows();
-    (async () => {
-      const snap = await getDoc(doc(db, followupDoc));
-      if (snap.exists()) {
-        const data = snap.data() as any;
-        if (typeof data.intervalDays === 'number') setIntervalDays(data.intervalDays);
-        if (data.lastSentAt) {
-          const ts = (data.lastSentAt as Timestamp).toDate ? (data.lastSentAt as Timestamp).toDate() : new Date(data.lastSentAt);
-          setLastSentAt(ts);
-        }
-        if (typeof data.stageLimit === 'number') setStageLimit(data.stageLimit);
-        const t: Record<string, string> = {};
-        ['subject1','body1','subject2','body2'].forEach(k => {
-          if (typeof data[k] === 'string') t[k] = data[k];
-        });
-        setTemplates(t);
-      }
-    })();
-    const ref = doc(db, 'counters', 'default');
-    const unsub = onSnapshot(ref, snap => {
-      setCount((snap.data() as any)?.count || 0);
-    });
-    return () => unsub();
   }, []);
 
   return (

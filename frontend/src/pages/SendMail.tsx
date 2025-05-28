@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { db } from '../firebase';
-import { doc, getDoc, onSnapshot, setDoc, serverTimestamp, Timestamp } from 'firebase/firestore';
+import { doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { useFollowupSettings } from '../hooks/useFollowupSettings';
 
 interface State {
   row?: any;
@@ -21,32 +22,18 @@ const SendMail: React.FC = () => {
 
   const baseUrl = process.env.REACT_APP_FUNCTIONS_BASE_URL || '';
   const followupDoc = process.env.REACT_APP_FOLLOWUP_DOC || 'settings/followup';
-  const [intervalDays, setIntervalDays] = useState(0);
-  const [lastSentAt, setLastSentAt] = useState<Date | null>(null);
-  const [stageLimit, setStageLimit] = useState<number | null>(null);
-  const [count, setCount] = useState(0);
+  const {
+    intervalDays,
+    lastSentAt,
+    stageLimit,
+    templates,
+    count,
+  } = useFollowupSettings(followupDoc);
 
   useEffect(() => {
-    (async () => {
-      const snap = await getDoc(doc(db, followupDoc));
-      if (snap.exists()) {
-        const data = snap.data() as any;
-        if (typeof data.intervalDays === 'number') setIntervalDays(data.intervalDays);
-        if (data.lastSentAt) {
-          const ts = (data.lastSentAt as Timestamp).toDate ? (data.lastSentAt as Timestamp).toDate() : new Date(data.lastSentAt);
-          setLastSentAt(ts);
-        }
-        if (typeof data.stageLimit === 'number') setStageLimit(data.stageLimit);
-        if (!subject && typeof data.subject1 === 'string') setSubject(data.subject1);
-        if (!body && typeof data.body1 === 'string') setBody(data.body1);
-      }
-    })();
-    const ref = doc(db, 'counters', 'default');
-    const unsub = onSnapshot(ref, snap => {
-      setCount((snap.data() as any)?.count || 0);
-    });
-    return () => unsub();
-  }, []);
+    if (!subject && templates.subject1) setSubject(templates.subject1);
+    if (!body && templates.body1) setBody(templates.body1);
+  }, [templates]);
 
   const canSend = () => {
     if (stageLimit !== null && count >= stageLimit) return false;
